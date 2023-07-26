@@ -1,7 +1,7 @@
 <h1 align="center">fetch-extendable</h1>
 
 <p align="center">
-A very light and simple library to extend fetch by implementing request, response interceptors.
+  A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
 </p>
 
 ```ts
