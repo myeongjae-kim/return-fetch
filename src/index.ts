@@ -4,7 +4,7 @@ export type ReturnFetch = typeof returnFetch;
 export type ReturnFetchDefaultOptions = {
   fetch?: ReturnType<ReturnFetch>;
   baseUrl?: string | URL;
-  headers?: Record<string, string>;
+  headers?: HeadersInit;
   interceptors?: {
     request?: (args: FetchArgs) => Promise<FetchArgs>;
     response?: (
@@ -17,20 +17,27 @@ export type ReturnFetchDefaultOptions = {
 const applyDefaultOptions = (
   [url, requestInit]: FetchArgs,
   defaultOptions?: ReturnFetchDefaultOptions,
-): FetchArgs => [
-  (() => {
-    // ternary operator does not support short circuting after uglifying a bundle, so use 'if' statement instead.
-    if (defaultOptions?.baseUrl) {
-      return new URL(url, defaultOptions.baseUrl);
-    } else {
-      return url;
-    }
-  })(),
-  {
-    ...requestInit,
-    headers: { ...defaultOptions?.headers, ...requestInit?.headers },
-  },
-];
+): FetchArgs => {
+  const headers = new Headers(defaultOptions?.headers);
+  [...new Headers(requestInit?.headers).entries()].forEach(([key, value]) => {
+    headers.set(key, value);
+  });
+
+  return [
+    (() => {
+      // ternary operator does not support short circuting after uglifying a bundle, so use 'if' statement instead.
+      if (defaultOptions?.baseUrl) {
+        return new URL(url, defaultOptions.baseUrl);
+      } else {
+        return url;
+      }
+    })(),
+    {
+      ...requestInit,
+      headers,
+    },
+  ];
+};
 
 export const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>

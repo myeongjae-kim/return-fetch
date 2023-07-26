@@ -3,11 +3,10 @@
     "module": "ESNext",
     "declaration": true,
     "target": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
-    "outDir": "dist/",
-    "removeComments": true
+    "outDir": "dist/"
   },
   "include": ["src/"],
-  "exclude": ["tests/", "dist/", "examples/", "src/**/*.test.mts"]
+  "exclude": ["tests/", "dist/", "examples/"]
 }
