@@ -35,7 +35,7 @@
     "prepublishOnly": "npm run test && npm run build",
     "watch": "npm run clean && tsc -w",
     "test": "vitest run",
-    "test:watch": "vitest run",
+    "test:watch": "vitest",
     "coverage": "vitest run --coverage",
     "prettier": "prettier . --write",
     "lint": "eslint src/**",
