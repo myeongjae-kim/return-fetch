@@ -67,7 +67,7 @@ In implementing the `fetch` interceptor, I considered the following points:
 
 1. Setting library boundaries. I decided to only implement the following additional functions and not others:
     1. Implementing request and response interceptors
-    2. Specifying a baseURL
+    2. Specifying a baseUrl
     3. Setting a default header
 2. It should be easy to add an interceptor.
 3. The code to add an interceptor should be reusable.
