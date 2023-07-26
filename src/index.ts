@@ -19,7 +19,7 @@ const applyDefaultOptions = (
   defaultOptions?: ReturnFetchDefaultOptions,
 ): FetchArgs => [
   (() => {
-    // ternary operator does not support short circuting, so use 'if' statement instead.
+    // ternary operator does not support short circuting after uglifying a bundle, so use 'if' statement instead.
     if (defaultOptions?.baseUrl) {
       return new URL(url, defaultOptions.baseUrl);
     } else {
