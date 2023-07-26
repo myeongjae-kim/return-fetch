@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "declaration": true,
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "outDir": "dist/",
+    "removeComments": true
+  },
+  "include": ["src/"],
+  "exclude": ["tests/", "dist/", "examples/", "src/**/*.test.mts"]
+}
