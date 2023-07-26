@@ -1,7 +1,7 @@
 {
   "name": "fetch-extendable",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A very light and simple library to extend fetch by implementing request, response interceptors.",
   "source": "src/index.ts",
   "exports": {
@@ -45,10 +45,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "TBD"
+    "url": "https://github.com/deer-develop/fetch-extendable"
   },
   "keywords": [
-    "TBD"
+    "fetch",
+    "interceptor",
+    "request",
+    "response",
+    "baseURL",
+    "baseUrl",
+    "default headers",
+    "header"
   ],
   "author": "Myeongjae Kim",
   "license": "MIT",
