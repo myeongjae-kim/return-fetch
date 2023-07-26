@@ -74,6 +74,26 @@ In implementing the `fetch` interceptor, I considered the following points:
 4. Interceptors should be able to maintain the Single Responsibility Principle (SRP),
 and it should be possible to combine interceptors that adhere to the SRP.
 
-### Usage
+## Installation
+
+Via npm
+
+```bash
+npm install fetch-extendable
+```
+
+Via yarn
+
+```bash
+yarn add fetch-extendable
+```
+
+Via pnpm
+
+```bash
+pnpm add fetch-extendable
+```
+
+## Usage
 
 TBD
