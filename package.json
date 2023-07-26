@@ -2,7 +2,7 @@
   "name": "fetch-extendable",
   "type": "module",
   "version": "0.1.0",
-  "description": "A very light and simple library to Extend fetch by request, response interceptors.",
+  "description": "A very light and simple library to extend fetch by implementing request, response interceptors.",
   "source": "src/index.ts",
   "exports": {
     ".": {
