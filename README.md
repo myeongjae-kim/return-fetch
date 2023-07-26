@@ -59,7 +59,7 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 The most disappointing aspect I found when trying to replace Axios with `fetch` was that `fetch` does not have any
 interceptors. I thought surely someone must have implemented it, so I searched for libraries. However, there was no
 library capable of handling various situations, only one that could add a single request and response interceptors to
-the global `fetch`. This is the reasons why I decided to implement it myself.
+the global `fetch`. This is the reason why I decided to implement it myself.
 
 ### Philosophy
 
