@@ -1,0 +1,18 @@
+{
+  "name": "fetch-extendable",
+  "version": "0.1.0",
+  "description": "A very light and simple library to Extend fetch by request, response interceptors.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "TBD"
+  },
+  "keywords": [
+    "TBD"
+  ],
+  "author": "Myeongjae Kim",
+  "license": "MIT"
+}
