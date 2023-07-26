@@ -2,6 +2,7 @@
 
 <p align="center">
   A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
+  <a href="https://stackblitz.com/edit/fetch-extendable" target="_blank"><strong>See Demo</strong></a>.
 </p>
 
 ```ts
