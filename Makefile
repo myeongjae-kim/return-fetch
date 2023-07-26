@@ -1,0 +1,2 @@
+main:
+	npm run setup

@@ -28,6 +28,7 @@
     "package.json"
   ],
   "scripts": {
+    "setup": "husky install",
     "clean": "rimraf dist",
     "build": "npm run clean && microbundle --format modern,cjs,umd && sh ./scripts/generate-cts.sh",
     "dev": "microbundle watch",
@@ -39,8 +40,7 @@
     "prettier": "prettier . --write",
     "lint": "eslint src/**",
     "lint-staged": "lint-staged",
-    "check": "tsc --strict --noEmit --extendedDiagnostics",
-    "temp": "terser dist/index.mjs --compress --mangle --module -o dist/index.mjs"
+    "check": "tsc --strict --noEmit --extendedDiagnostics"
   },
   "repository": {
     "type": "git",
