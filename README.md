@@ -70,7 +70,8 @@ In implementing the `fetch` interceptors, I considered the following points:
     2. Specifying a baseUrl
     3. Setting a default header
 2. **No peer dependencies**. I decided not to use any other libraries. This is because I wanted to keep the library as
-   light as possible, and running any execution environments which have `fetch` (e.g. Node.js, browser, React Native).
+   light as possible, and running any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
+   Native).
 3. It should be easy to add interceptors.
 4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
 and it should be possible to combine interceptors that adhere to the SRP.
