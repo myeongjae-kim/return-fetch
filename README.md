@@ -1,12 +1,12 @@
-<h1 align="center">fetch-extendable</h1>
+<h1 align="center">return-fetch</h1>
 
 <p align="center">
   A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
-  <a href="https://stackblitz.com/edit/fetch-extendable" target="_blank"><strong>See Demo</strong></a>.
+  <a href="https://stackblitz.com/edit/return-fetch" target="_blank"><strong>See Demo</strong></a>.
 </p>
 
 ```ts
-import { returnFetch } from "fetch-extendable";
+import { returnFetch } from "return-fetch";
 
 const fetchExtended = returnFetch({
   baseUrl: "https://jsonplaceholder.typicode.com",
@@ -81,19 +81,19 @@ and it should be possible to combine interceptors that adhere to the SRP.
 Via npm
 
 ```bash
-npm install fetch-extendable
+npm install return-fetch
 ```
 
 Via yarn
 
 ```bash
-yarn add fetch-extendable
+yarn add return-fetch
 ```
 
 Via pnpm
 
 ```bash
-pnpm add fetch-extendable
+pnpm add return-fetch
 ```
 
 ## Usage
