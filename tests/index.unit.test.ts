@@ -1,34 +1,162 @@
-import { describe, it } from "vitest";
+/* eslint @typescript-eslint/ban-ts-comment: "off", no-global-assign: "off" */
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import returnFetch from "../src";
 
 describe("returnFetch", () => {
-  it.skip("should print and render outputs", async () => {
-    const fetchExtended = returnFetch({
-      baseUrl: "https://jsonplaceholder.typicode.com",
-      headers: { Accept: "application/json" },
-      interceptors: {
-        request: async (args) => {
-          console.log("********* before sending request *********");
-          console.log("url:", args[0].toString());
-          console.log("requestInit:", args[1], "\n\n");
-          return args;
-        },
+  const globalFetch = fetch;
+  let fetchMocked: ReturnType<typeof vi.fn>;
+  beforeEach(() => {
+    fetchMocked = vi.fn();
+    // @ts-ignore
+    fetch = fetchMocked;
+  });
 
+  afterEach(() => {
+    // @ts-ignore
+    fetch = globalFetch;
+  });
+
+  it("should call global fetch when no default options.", async () => {
+    // given
+    const fetchExtended = returnFetch();
+
+    // when
+    await fetchExtended("https://base-url.com/todos/1");
+
+    // then
+    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
+      headers: new Headers(),
+    });
+  });
+
+  it("should call given fetch.", async () => {
+    // given
+    const givenFetch = vi.fn();
+    const fetchExtended = returnFetch({ fetch: givenFetch });
+
+    // when
+    await fetchExtended("https://base-url.com/todos/1");
+
+    // then
+    expect(givenFetch).toHaveBeenCalledWith("https://base-url.com/todos/1", {
+      headers: new Headers(),
+    });
+    expect(fetchMocked).not.toHaveBeenCalled();
+  });
+
+  it("should apply baseUrl.", async () => {
+    // given
+    const fetchExtended = returnFetch({
+      baseUrl: "https://base-url.com",
+    });
+
+    // when
+    await fetchExtended("/todos/1");
+
+    // then
+    expect(fetchMocked).toHaveBeenCalledWith(
+      new URL("https://base-url.com/todos/1"),
+      {
+        headers: new Headers(),
+      },
+    );
+  });
+
+  it("should apply default headers.", async () => {
+    // given
+    const fetchExtended = returnFetch({
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    // when
+    await fetchExtended("https://base-url.com/todos/1");
+
+    // then
+    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      }),
+    });
+  });
+
+  it("should override default headers", async () => {
+    // given
+    const fetchExtended = returnFetch({
+      headers: {
+        "Content-Type": "application/xml",
+        Accept: "application/json",
+      },
+    });
+
+    // when
+    await fetchExtended("https://base-url.com/todos/1", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    // then
+    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
+      headers: new Headers({
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      }),
+    });
+  });
+
+  it("should call request, response interceptors", async () => {
+    // given
+    const mockShouldBeCalledInInterceptors = vi.fn();
+
+    const fetchExtended = returnFetch({
+      interceptors: {
+        request: async () => {
+          mockShouldBeCalledInInterceptors("request interceptor called");
+          return [
+            "https://force-set-url.com",
+            { headers: { "X-Force-Set-Header": "force-set-header" } },
+          ];
+        },
         response: async (requestArgs, response) => {
-          console.log("********* after receiving response *********");
-          console.log("url:", requestArgs[0].toString());
-          console.log("requestInit:", requestArgs[1], "\n\n");
-          return response;
+          mockShouldBeCalledInInterceptors("response interceptor called");
+
+          const body: ReadableStream<Uint8Array> = new Blob([
+            "force-set-body",
+          ]).stream();
+
+          return { ...response, body };
         },
       },
     });
 
-    await fetchExtended("/todos/1", { method: "GET" })
-      .then((it) => it.text())
-      .then(console.log);
-  });
+    // when
+    const response = await fetchExtended("https://base-url.com/todos/1");
 
-  // TODO: write tests
-  //  1. default option 적용 잘 되는지. 특히 헤더, 동일한 key의 header를 입력한 경우 덮어쓰기 잘 되는지
-  //  2. 인터셉터 여러 개를 compose했을 때 인터셉터 순서에 맞게 잘 호출 되는지
+    // then
+    expect(mockShouldBeCalledInInterceptors).toHaveBeenNthCalledWith(
+      1,
+      "request interceptor called",
+    );
+    expect(mockShouldBeCalledInInterceptors).toHaveBeenNthCalledWith(
+      2,
+      "response interceptor called",
+    );
+
+    expect(fetchMocked).toHaveBeenCalledWith("https://force-set-url.com", {
+      headers: { "X-Force-Set-Header": "force-set-header" },
+    });
+
+    const responseBody = await response.body
+      .getReader()
+      .read()
+      .then((stream) => stream.value)
+      .then(Buffer.from)
+      .then((it) => it.toString("utf-8"));
+    expect(responseBody).toBe("force-set-body");
+  });
 });
