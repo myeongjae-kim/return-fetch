@@ -30,7 +30,7 @@
   "scripts": {
     "setup": "husky install",
     "clean": "rimraf dist",
-    "build": "npm run clean && microbundle --format modern,cjs,umd && sh ./scripts/generate-cts.sh",
+    "build": "npm run clean && microbundle --format modern,cjs,umd --sourcemap false && sh ./scripts/generate-cts.sh",
     "dev": "microbundle watch",
     "prepublishOnly": "npm run test && npm run build",
     "watch": "npm run clean && tsc -w",
