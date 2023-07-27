@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { returnFetch } from "../src";
+import returnFetch from "../src";
 
 describe("returnFetch", () => {
   it.skip("should print and render outputs", async () => {

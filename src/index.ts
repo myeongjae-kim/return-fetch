@@ -39,7 +39,7 @@ const applyDefaultOptions = (
   ];
 };
 
-export const returnFetch =
+const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
   async (
     url: string | URL,
@@ -64,3 +64,5 @@ export const returnFetch =
       response
     );
   };
+
+export default returnFetch;
