@@ -15,6 +15,9 @@
   <a href="https://codecov.io/gh/deer-develop/return-fetch">
     <img src="https://img.shields.io/codecov/c/github/deer-develop/return-fetch.svg" alt="Test Coverage" height="18">
   </a>
+  <a href="https://raw.githubusercontent.com/deer-develop/return-fetch/main/LICENSE">
+    <img src="https://img.shields.io/npm/l/return-fetch.svg" alt="MIT license" height="18">
+  </a>
 </p>
 
 ```ts
