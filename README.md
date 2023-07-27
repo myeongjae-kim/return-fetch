@@ -24,7 +24,7 @@
 </p>
 
 ```ts
-import { returnFetch } from "return-fetch";
+import returnFetch from "return-fetch";
 
 const fetchExtended = returnFetch({
   baseUrl: "https://jsonplaceholder.typicode.com",
