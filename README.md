@@ -111,3 +111,7 @@ pnpm add return-fetch
 ## Usage
 
 TBD
+
+## License
+
+MIT © [Myeongjae Kim](https://myeongjae.kim)

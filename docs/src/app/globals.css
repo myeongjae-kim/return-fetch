@@ -79,3 +79,8 @@ a {
 a:hover {
     @apply text-blue-500;
 }
+
+hr {
+    @apply my-2 border-0 h-[1px] opacity-70;
+    background-image: linear-gradient(90deg, #ccc,#333,#ccc);
+}

@@ -20,6 +20,18 @@ export default function Home() {
           <Usage2 />
           <Usage3 />
           <Usage4 />
+          <div className={"mb-24"}>
+            <h2 id={"license"}>License</h2>
+            MIT ©{" "}
+            <a
+              aria-label="Open author's homepage"
+              href="https://myeongjae.kim"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Myeongjae Kim
+            </a>
+          </div>
         </div>
       </div>
     </main>

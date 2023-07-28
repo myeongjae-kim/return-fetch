@@ -27,9 +27,7 @@ const Usage1 = (): React.JSX.Element => {
   );
 
   const fetch = React.useMemo(() => {
-    return returnFetchThrowingErrorByStatusCode({
-      baseUrl: window?.origin,
-    });
+    return returnFetchThrowingErrorByStatusCode();
   }, [returnFetchThrowingErrorByStatusCode]);
 
   return (
