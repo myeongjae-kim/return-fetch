@@ -1,5 +1,4 @@
-export const basicExample = `
-\`\`\`ts
+export const basicExampleCode = `\`\`\`ts
 import returnFetch from "return-fetch";
 
 const fetchExtended = returnFetch({
@@ -25,26 +24,5 @@ const fetchExtended = returnFetch({
 fetchExtended("/todos/1", { method: "GET" })
         .then((it) => it.text())
         .then(console.log);
-\`\`\`
-
-**Output**
-
-\`\`\`json
-********* before sending request *********
-url: https://jsonplaceholder.typicode.com/todos/1
-requestInit: { method: 'GET', headers: { Accept: 'application/json' } } 
-
-
-********* after receiving response *********
-url: https://jsonplaceholder.typicode.com/todos/1
-requestInit: { method: 'GET', headers: { Accept: 'application/json' } } 
-
-
-{
-  "userId": 1,
-  "id": 1,
-  "title": "delectus aut autem",
-  "completed": false
-}
 \`\`\`
 `;

@@ -2,6 +2,8 @@ import React from "react";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import IconLinkButton from "@/app/components/IconLinkButton";
+import GithubIcon from "@/app/components/GithubIcon";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +21,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <header className={"p-2 flex justify-end"}>
+          <IconLinkButton
+            aria-label="Open on GitHub"
+            href="https://github.com/deer-develop/return-fetch"
+          >
+            <GithubIcon />
+          </IconLinkButton>
+        </header>
+        {children}
+      </body>
     </html>
   );
 }

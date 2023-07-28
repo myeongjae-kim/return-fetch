@@ -43,3 +43,32 @@ h5 {
 h6 {
     @apply text-[0.7rem] font-bold mt-[1.2em] mb-[8px] leading-[1.4];
 }
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding-inline-start: 24px;
+}
+
+ol {
+    display: block;
+    list-style-type: decimal;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding-inline-start: 24px;
+}
+
+li {
+    display: list-item;
+    text-align: -webkit-match-parent;
+}
+
+a {
+    @apply text-blue-700 transition-colors duration-300 ease-in-out decoration-0;
+}
+
+a:hover {
+    @apply text-blue-500;
+}

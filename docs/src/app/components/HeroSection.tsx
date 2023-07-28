@@ -4,7 +4,7 @@ import BadgeSection from "@/app/components/BadgeSection";
 const HeroSection = (): React.JSX.Element => {
   return (
     <section className="bg-white dark:bg-gray-900 antialiased">
-      <div className="max-w-screen-xl px-4 py-4 mx-auto lg:px-6 lg:pt-8 lg:pb-16">
+      <div className="max-w-screen-xl px-4 pb-4 mx-auto lg:px-6 lg:pt-4 lg:pb-16">
         <div className="text-center">
           <div>
             <div className={"flex justify-center"}>
@@ -19,8 +19,8 @@ const HeroSection = (): React.JSX.Element => {
               </h2>
             </div>
             <p className="mt-4 text-base font-normal text-gray-500 dark:text-gray-400 md:max-w-xl md:mx-auto sm:text-xl">
-              Write your own functions to add features to the fetch and compose
-              them to create your own extended fetch.
+              Write functions adding features to the fetch and compose them to
+              create your own extended fetch.
             </p>
           </div>
         </div>

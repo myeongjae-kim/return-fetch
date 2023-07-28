@@ -9,6 +9,7 @@ import "prismjs/components/prism-typescript.min.js";
 import "prismjs/components/prism-json.min.js";
 import "prismjs/components/prism-jsx.min.js";
 import "prismjs/components/prism-tsx.min.js";
+import "prismjs/components/prism-bash.min.js";
 
 marked.use(
   mangle(),
