@@ -8,7 +8,7 @@ const HeroSection = (): React.JSX.Element => {
         <div className="text-center">
           <div>
             <div className={"flex justify-center"}>
-              <h2 className="bg-gradient-to-r from-blue-700 to-pink-500 bg-clip-text text-5xl font-extrabold leading-none tracking-tight text-gray-900 text-transparent dark:text-white sm:text-7xl lg:text-8xl">
+              <h1 className="bg-gradient-to-r from-blue-700 to-pink-500 bg-clip-text text-5xl font-extrabold leading-none tracking-tight text-gray-900 text-transparent dark:text-white sm:text-7xl lg:text-8xl">
                 <span className={"select-none"}>return-fetch</span>
                 <span className="mt-3 block text-2xl sm:text-4xl lg:text-5xl">
                   A simple and powerful <br />
@@ -16,7 +16,7 @@ const HeroSection = (): React.JSX.Element => {
                   <br />
                   to extend fetch.
                 </span>
-              </h2>
+              </h1>
             </div>
             <p className="mt-4 text-base font-normal text-gray-500 dark:text-gray-400 sm:text-xl md:mx-auto md:max-w-xl">
               Write functions adding features to the fetch and compose them to

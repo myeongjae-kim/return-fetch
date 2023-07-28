@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import IconLinkButton from "@/app/components/IconLinkButton";
 import GithubIcon from "@/app/components/GithubIcon";
+import ClientDependencyContainer from "@/app/containers/ClientDependencyContainer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
             <GithubIcon />
           </IconLinkButton>
         </header>
+        <ClientDependencyContainer />
         {children}
       </body>
     </html>
