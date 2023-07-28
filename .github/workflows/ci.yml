@@ -15,6 +15,10 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs }}
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: (cache) restore
         uses: actions/cache@master
         with:
@@ -22,10 +26,10 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
-        run: npm install
+        run: pnpm install
 
       - name: (coverage) Test
-        run: npm run coverage
+        run: pnpm run coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

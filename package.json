@@ -28,12 +28,13 @@
     "package.json"
   ],
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "setup": "husky install",
     "clean": "rimraf dist",
-    "build": "npm run clean && microbundle --format modern,cjs,umd --sourcemap false && sh ./scripts/generate-cts.sh",
+    "build": "pnpm run clean && microbundle --format modern,cjs,umd --sourcemap false && sh ./scripts/generate-cts.sh",
     "dev": "microbundle watch",
-    "prepublishOnly": "npm run test && npm run build",
-    "watch": "npm run clean && tsc -w",
+    "prepublishOnly": "pnpm run test && pnpm run build",
+    "watch": "pnpm run clean && tsc -w",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage",
