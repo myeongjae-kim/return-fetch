@@ -44,45 +44,66 @@ importers:
 
   docs:
     dependencies:
+      marked:
+        specifier: ^5.1.2
+        version: 5.1.2
+      marked-gfm-heading-id:
+        specifier: ^3.0.4
+        version: 3.0.4(marked@5.1.2)
+      marked-highlight:
+        specifier: ^2.0.1
+        version: 2.0.1(marked@5.1.2)
+      marked-mangle:
+        specifier: ^1.1.0
+        version: 1.1.0(marked@5.1.2)
       next:
-        specifier: 13.4.12
+        specifier: ^13.4.12
         version: 13.4.12(@babel/core@7.22.9)(react-dom@18.2.0)(react@18.2.0)
+      prismjs:
+        specifier: ^1.29.0
+        version: 1.29.0
       react:
-        specifier: 18.2.0
+        specifier: ^18.2.0
         version: 18.2.0
       react-dom:
-        specifier: 18.2.0
+        specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       return-fetch:
         specifier: workspace:^
         version: link:..
     devDependencies:
+      '@types/marked':
+        specifier: ^5.0.1
+        version: 5.0.1
       '@types/node':
-        specifier: 20.4.5
+        specifier: ^20.4.5
         version: 20.4.5
+      '@types/prismjs':
+        specifier: ^1.26.0
+        version: 1.26.0
       '@types/react':
-        specifier: 18.2.17
+        specifier: ^18.2.17
         version: 18.2.17
       '@types/react-dom':
-        specifier: 18.2.7
+        specifier: ^18.2.7
         version: 18.2.7
       autoprefixer:
-        specifier: 10.4.14
+        specifier: ^10.4.14
         version: 10.4.14(postcss@8.4.27)
       eslint:
         specifier: ^8.45.0
         version: 8.45.0
       eslint-config-next:
-        specifier: 13.4.12
+        specifier: ^13.4.12
         version: 13.4.12(eslint@8.45.0)(typescript@5.1.6)
       flowbite:
         specifier: ^1.7.0
         version: 1.7.0
       postcss:
-        specifier: 8.4.27
+        specifier: ^8.4.27
         version: 8.4.27
       tailwindcss:
-        specifier: 3.3.3
+        specifier: ^3.3.3
         version: 3.3.3
       typescript:
         specifier: ^5.1.6
@@ -1966,12 +1987,20 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
+  /@types/marked@5.0.1:
+    resolution: {integrity: sha512-Y3pAUzHKh605fN6fvASsz5FDSWbZcs/65Q6xYRmnIP9ZIYz27T4IOmXfH9gWJV1dpi7f1e7z7nBGUTx/a0ptpA==}
+    dev: true
+
   /@types/node@20.4.5:
     resolution: {integrity: sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==}
     dev: true
 
   /@types/parse-json@4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    dev: true
+
+  /@types/prismjs@1.26.0:
+    resolution: {integrity: sha512-ZTaqn/qSqUuAq1YwvOFQfVW1AR/oQJlLSZVustdjwI+GZ8kr0MSHBj0tsXPW1EqHubx50gtBEjbPGsdZwQwCjQ==}
     dev: true
 
   /@types/prop-types@15.7.5:
@@ -3849,6 +3878,10 @@ packages:
       resolve-pkg-maps: 1.0.0
     dev: true
 
+  /github-slugger@2.0.0:
+    resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
+    dev: false
+
   /glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -4635,6 +4668,37 @@ packages:
     dependencies:
       semver: 7.5.4
     dev: true
+
+  /marked-gfm-heading-id@3.0.4(marked@5.1.2):
+    resolution: {integrity: sha512-k22f+k8B449kRVXbi3OYxahI6t8HywKIF0wn0L0atzYhFHYRcJynLDekh+lcxcZkNnkEGRZOHuRfTcpjMjLqDw==}
+    peerDependencies:
+      marked: ^4 || ^5
+    dependencies:
+      github-slugger: 2.0.0
+      marked: 5.1.2
+    dev: false
+
+  /marked-highlight@2.0.1(marked@5.1.2):
+    resolution: {integrity: sha512-LDUfR/zDvD+dJ+lQOWHkxvBLNxiXcaN8pBtwJ/i4pI0bkDC/Ef6Mz1qUrAuHXfnpdr2rabdMpVFhqFuU+5Mskg==}
+    peerDependencies:
+      marked: ^4 || ^5
+    dependencies:
+      marked: 5.1.2
+    dev: false
+
+  /marked-mangle@1.1.0(marked@5.1.2):
+    resolution: {integrity: sha512-ed2W2gMB2HIBaYasBZveMFJfDRTL2OFycr0GgUSPcBSNl5dX+1r6lHG6u1eFXw7kej2hBTWa1m6YZqcfn4Coxw==}
+    peerDependencies:
+      marked: ^4 || ^5
+    dependencies:
+      marked: 5.1.2
+    dev: false
+
+  /marked@5.1.2:
+    resolution: {integrity: sha512-ahRPGXJpjMjwSOlBoTMZAK7ATXkli5qCPxZ21TG44rx1KEo44bii4ekgTDQPNRQ4Kh7JMb9Ub1PVk1NxRSsorg==}
+    engines: {node: '>= 16'}
+    hasBin: true
+    dev: false
 
   /maxmin@2.1.0:
     resolution: {integrity: sha512-NWlApBjW9az9qRPaeg7CX4sQBWwytqz32bIEo1PW9pRW+kBP9KLRfJO3UC+TV31EcQZEUq7eMzikC7zt3zPJcw==}
@@ -5649,6 +5713,11 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
+
+  /prismjs@1.29.0:
+    resolution: {integrity: sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==}
+    engines: {node: '>=6'}
+    dev: false
 
   /promise.series@0.2.0:
     resolution: {integrity: sha512-VWQJyU2bcDTgZw8kpfBpB/ejZASlCrzwz5f2hjb/zlujOEB4oeiAhHygAWq8ubsX2GVkD4kCU5V2dwOTaCY5EQ==}

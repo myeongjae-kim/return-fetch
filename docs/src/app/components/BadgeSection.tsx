@@ -2,7 +2,7 @@ import React from "react";
 
 const BadgeSection = (): React.JSX.Element => {
   return (
-    <div className={"flex gap-2 flex-wrap"}>
+    <div className={"flex gap-2 flex-wrap justify-center"}>
       <a href="https://github.com/deer-develop/return-fetch/actions?query=workflow%3ACI">
         <img
           src="https://github.com/deer-develop/return-fetch/workflows/CI/badge.svg"
