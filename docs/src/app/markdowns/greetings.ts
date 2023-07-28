@@ -12,7 +12,7 @@ In implementing the \`fetch\` interceptors, I considered the following points:
 
 1. Setting library boundaries. I decided to only implement the following additional functions and not others:
    1. Implementing request and response interceptors
-   2. Specifying a baseUrl
+   2. Specifying a \`baseUrl\`
    3. Setting a default header
 2. **No peer dependencies**. I decided not to use any other libraries. This is because I wanted to keep the library as
    light as possible, and running any execution environments which have \`fetch\` (e.g. Node.js, Web Browsers, React

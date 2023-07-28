@@ -102,8 +102,8 @@ const Usage1 = (): React.JSX.Element => {
         markdown={`### #4. Compose above three high order functions to create your awesome fetch 🥳
         
 Because of the recursive type definition, you can chain extended \`returnFetch\` functions as many as you want. It
-allow you to write extending functions which are responsible for a single responsibility. Sticking to the single
-responsibility principle and writing a reusable function is a good practice to write a clean code.
+allow you to write extending functions which are responsible only for a single feature. Sticking to **the Single
+Responsibility Principle** and writing a reusable function is a good practice to write clean code.
 
 \`\`\`ts
 import {
@@ -112,10 +112,12 @@ import {
   returnFetchWithLoadingIndicator
 } from "@/your/customized/return-fetch";
 
-// Compose high order functions to create your awesome fetch.
-// 1. Add loading indicator.
-// 2. Throw an error when the response status code is 400 or more.
-// 3. Serialize request body and deserialize response body as json and return it.
+/*
+  Compose high order functions to create your awesome fetch.
+   1. Add loading indicator.
+   2. Throw an error when the response status code is 400 or more.
+   3. Serialize request body and deserialize response body as json and return it.
+*/
 export const fetchExtended = returnFetchJson({
   fetch: returnFetchThrowingErrorByStatusCode({
     fetch: returnFetchWithLoadingIndicator({

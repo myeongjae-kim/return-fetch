@@ -33,12 +33,12 @@ const Usage1 = (): React.JSX.Element => {
   return (
     <div>
       <MarkdownRenderer
-        markdown={`### #2. Throw an error if a response status is greater than or equal to 400.
+        markdown={`### #2. Throw an error if a response status is more than or equal to 400.
 
 \`\`\`ts
 import returnFetch, { ReturnFetch } from "return-fetch";
 
-// Write your own high order function to throw an error if a response status is greater than or equal to 400.
+// Write your own high order function to throw an error if a response status is more than or equal to 400.
 const returnFetchThrowingErrorByStatusCode: ReturnFetch = (args) => returnFetch({
   ...args,
   interceptors: {
