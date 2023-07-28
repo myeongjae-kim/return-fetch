@@ -20,9 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={"scroll-smooth"}>
       <body className={inter.className}>
-        <header className={"p-2 flex justify-end"}>
+        <header className={"flex justify-end p-2"}>
           <IconLinkButton
             aria-label="Open on GitHub"
             href="https://github.com/deer-develop/return-fetch"

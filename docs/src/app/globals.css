@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@supports (-webkit-touch-callout: none) {
+    .h-screen {
+        height: -webkit-fill-available;
+    }
+}
+
 html {
     @apply text-stone-900;
 }
@@ -29,11 +35,11 @@ h2 {
 }
 
 h3 {
-    @apply text-[1.75rem] font-bold mt-[1.2em] mb-[8px] leading-[1.4];
+    @apply text-[1.5rem] font-bold mt-[1.2em] mb-[8px] leading-[1.4];
 }
 
 h4 {
-    @apply text-[1.25rem] font-bold mt-[1.2em] mb-[8px] leading-[1.4];
+    @apply text-[1.125rem] font-bold mt-[1.2em] mb-[8px] leading-[1.4];
 }
 
 h5 {

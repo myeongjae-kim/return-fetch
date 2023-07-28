@@ -36,10 +36,10 @@ const badges: Badge[] = [
 
 const BadgeSection = (): React.JSX.Element => {
   return (
-    <div className={"flex gap-2 flex-wrap justify-center"}>
+    <div className={"flex flex-wrap justify-center gap-2"}>
       {badges.map(({ href, src, alt }) => (
         <a
-          className={"select-none cursor-pointer"}
+          className={"cursor-pointer select-none"}
           key={href}
           href={href}
           target={"_blank"}

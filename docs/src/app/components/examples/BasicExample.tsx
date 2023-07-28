@@ -2,9 +2,10 @@
 
 import React from "react";
 import { marked } from "marked";
-import returnFetch from "return-fetch";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
+import returnFetch from "return-fetch";
+import { strings } from "@/app/common/strings";
 
 export const basicExampleCode = `\`\`\`ts
 import returnFetch from "return-fetch";
@@ -48,7 +49,7 @@ const fetchExtended = returnFetch({
     request: async (args) => {
       logs.length = 0;
       logs.push("********* before sending request *********");
-      logs.push(`url: ${args[0]}`);
+      logs.push(`url: "${args[0]}"`);
       logs.push(
         `requestInit: ${JSON.stringify(
           { ...args[1], headers: headersToJson(args[1]?.headers as Headers) },
@@ -61,7 +62,7 @@ const fetchExtended = returnFetch({
 
     response: async (requestArgs, response) => {
       logs.push("********* after receiving response *********");
-      logs.push(`url: ${requestArgs[0]}`);
+      logs.push(`url: "${requestArgs[0]}"`);
       logs.push(
         `requestInit: ${JSON.stringify(
           {
@@ -79,6 +80,7 @@ const fetchExtended = returnFetch({
 
 const BasicExample = (): React.JSX.Element => {
   const [output, setOutput] = React.useState(`\`\`\`json
+${strings.clickRunButton}
 \`\`\``);
 
   return (
@@ -102,6 +104,17 @@ const BasicExample = (): React.JSX.Element => {
       </div>
       <strong>Output</strong>
       <div dangerouslySetInnerHTML={{ __html: marked(output) }} />
+      <div>
+        To see how powerful it is,{" "}
+        <a
+          href={
+            "#4-compose-above-three-high-order-functions-to-create-your-awesome-fetch-"
+          }
+        >
+          go to an example composing multiple customized{" "}
+          <code>returnFetch</code>.
+        </a>
+      </div>
     </div>
   );
 };

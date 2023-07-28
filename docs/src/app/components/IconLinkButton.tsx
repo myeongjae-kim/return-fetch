@@ -5,7 +5,7 @@ const IconLinkButton = (
 ): React.JSX.Element => {
   return (
     <a
-      className="hover:text-black text-black hover:opacity-100 opacity-60 active:scale-95 transition-transform flex w-12 h-12 rounded-full items-center justify-center hover:bg-gray-100"
+      className="flex h-12 w-12 items-center justify-center rounded-full text-black opacity-60 transition-transform hover:bg-gray-100 hover:text-black hover:opacity-100 active:scale-95"
       target="_blank"
       rel="noreferrer noopener"
       {...props}

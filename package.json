@@ -68,6 +68,7 @@
     "lint-staged": "^13.2.3",
     "microbundle": "^0.15.1",
     "prettier": "3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1",
     "rimraf": "^5.0.1",
     "typescript": "^5.1.6",
     "vitest": "^0.33.0"
