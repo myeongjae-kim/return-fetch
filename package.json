@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "postinstall": "pnpm run build",
     "setup": "husky install",
     "clean": "rimraf dist",
     "build": "pnpm run clean && microbundle --format modern,cjs,umd --sourcemap false && sh ./scripts/generate-cts.sh",
