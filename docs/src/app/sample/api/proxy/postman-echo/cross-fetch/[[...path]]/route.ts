@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import crossFetch from "cross-fetch";
 import returnFetch from "return-fetch";
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 const pathPrefix = "/sample/api/proxy/postman-echo/cross-fetch";
 
 export async function GET(request: NextRequest) {

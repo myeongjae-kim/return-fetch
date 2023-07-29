@@ -9,7 +9,6 @@ import returnFetch, {
   ReturnFetchDefaultOptions,
 } from "return-fetch";
 import { strings } from "@/app/common/strings";
-import { ApiResponse } from "@/app/domain/model/ApiResponse";
 import LoadingIndicator from "@/app/components/LoadingIndicator";
 
 const Usage4 = (): React.JSX.Element => {
@@ -69,9 +68,9 @@ const Usage4 = (): React.JSX.Element => {
         // get response as text and parse json for not throwing an error when the response body is empty.
         const body = await response.text();
 
-        let data = {};
+        let data = {} as T;
         if (body) {
-          data = (JSON.parse(body) as ApiResponse<T>).data;
+          data = JSON.parse(body);
         }
 
         return {
@@ -129,7 +128,7 @@ export const fetchExtended = returnFetchJson({
 //////////////////// Use it somewhere ////////////////////
 fetchExtended("/sample/api/echo", {
   method: "POST",
-  body: { message: "this is an object of \`ApiResponse['data']\`" }, // body should be an object.
+  body: { message: "Hello, world!" }, // body should be an object.
 }).catch((e) => { alert(e.message); });
 \`\`\`
 `}
@@ -141,7 +140,7 @@ fetchExtended("/sample/api/echo", {
               setOutput("Loading...");
               fetch<{ message: string }>("/sample/api/echo?delay=200", {
                 method: "POST",
-                body: { message: "this is an object of `ApiResponse['data']`" },
+                body: { message: "Hello, world!" },
               })
                 .then((it) => it.body)
                 .then((it) => {

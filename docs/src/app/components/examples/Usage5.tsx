@@ -170,6 +170,7 @@ import { NextRequest } from "next/server";
 import nodeFetch from "node-fetch";
 import returnFetch, { ReturnFetchDefaultOptions } from "return-fetch";
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
 const pathPrefix = "/sample/api/proxy/postman-echo/node-fetch";
 
 export async function GET(request: NextRequest) {
@@ -331,6 +332,7 @@ import { NextRequest } from "next/server";
 import crossFetch from "cross-fetch";
 import returnFetch from "return-fetch";
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
 const pathPrefix = "/sample/api/proxy/postman-echo/cross-fetch";
 
 export async function GET(request: NextRequest) {
@@ -427,6 +429,7 @@ I implemented a simple proxy for https://postman-echo.com with Next.js built-in 
 import { NextRequest } from "next/server";
 import returnFetch from "return-fetch";
 
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
 const pathPrefix = "/sample/api/proxy/postman-echo/nextjs-fetch";
 
 export async function GET(request: NextRequest) {
