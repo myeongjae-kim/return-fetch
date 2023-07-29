@@ -51,10 +51,14 @@ const returnFetch =
     );
 
     // apply request interceptor
-    const processedArgs: FetchArgs =
-      (await defaultOptions?.interceptors?.request?.(
+    let processedArgs: FetchArgs;
+    if (defaultOptions?.interceptors?.request) {
+      processedArgs = await defaultOptions?.interceptors?.request?.(
         defaultOptionAppliedArgs,
-      )) ?? defaultOptionAppliedArgs;
+      );
+    } else {
+      processedArgs = defaultOptionAppliedArgs;
+    }
 
     // ajax call and apply response interceptor
     const response = await (defaultOptions?.fetch ?? fetch)(...processedArgs);
