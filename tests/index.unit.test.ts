@@ -122,7 +122,7 @@ describe("returnFetch", () => {
             { headers: { "X-Force-Set-Header": "force-set-header" } },
           ];
         },
-        response: async (requestArgs, response) => {
+        response: async (_args, response) => {
           mockShouldBeCalledInInterceptors("response interceptor called");
 
           const body: ReadableStream<Uint8Array> = new Blob([
@@ -158,5 +158,44 @@ describe("returnFetch", () => {
       .then(Buffer.from)
       .then((it) => it.toString("utf-8"));
     expect(responseBody).toBe("force-set-body");
+  });
+
+  it("should use provided fetch in interceptors", async () => {
+    // given
+    const myFetch = vi.fn();
+
+    const fetchExtended = returnFetch({
+      fetch: myFetch,
+      interceptors: {
+        request: async (requestArgs, fetchProvided) => {
+          await fetchProvided("provided fetch called in request interceptor");
+
+          return requestArgs;
+        },
+        response: async (_args, response, fetchProvided) => {
+          await fetchProvided("provided fetch called in response interceptor");
+
+          return response;
+        },
+      },
+    });
+
+    // when
+    await fetchExtended("https://base-url.com/todos/1");
+
+    // then
+    expect(myFetch).toHaveBeenNthCalledWith(
+      1,
+      "provided fetch called in request interceptor",
+    );
+
+    expect(myFetch).toHaveBeenNthCalledWith(2, "https://base-url.com/todos/1", {
+      headers: new Headers(),
+    });
+
+    expect(myFetch).toHaveBeenNthCalledWith(
+      3,
+      "provided fetch called in response interceptor",
+    );
   });
 });

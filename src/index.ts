@@ -6,10 +6,14 @@ export type ReturnFetchDefaultOptions = {
   baseUrl?: string | URL;
   headers?: HeadersInit;
   interceptors?: {
-    request?: (args: FetchArgs) => Promise<FetchArgs>;
+    request?: (
+      requestArgs: FetchArgs,
+      fetch: ReturnFetchDefaultOptions["fetch"],
+    ) => Promise<FetchArgs>;
     response?: (
       requestArgs: FetchArgs,
       response: Response,
+      fetch: ReturnFetchDefaultOptions["fetch"],
     ) => Promise<Response>;
   };
 };
@@ -45,6 +49,7 @@ const returnFetch =
     url: string | URL,
     requestInit?: Parameters<typeof fetch>[1],
   ): Promise<Response> => {
+    const fetchProvided = defaultOptions?.fetch ?? fetch;
     const defaultOptionAppliedArgs = applyDefaultOptions(
       [url, requestInit],
       defaultOptions,
@@ -55,17 +60,21 @@ const returnFetch =
     if (defaultOptions?.interceptors?.request) {
       processedArgs = await defaultOptions?.interceptors?.request?.(
         defaultOptionAppliedArgs,
+        fetchProvided,
       );
     } else {
       processedArgs = defaultOptionAppliedArgs;
     }
 
     // ajax call and apply response interceptor
-    const response = await (defaultOptions?.fetch ?? fetch)(...processedArgs);
+    const response = await fetchProvided(...processedArgs);
 
     return (
-      defaultOptions?.interceptors?.response?.(processedArgs, response) ??
-      response
+      defaultOptions?.interceptors?.response?.(
+        processedArgs,
+        response,
+        fetchProvided,
+      ) ?? response
     );
   };
 
