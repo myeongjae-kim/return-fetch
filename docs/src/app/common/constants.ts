@@ -4,5 +4,5 @@ export const constants = {
   TOC_LINK_CLASS: "toc-link",
   TOC_DATA_HEADING_ID_PROPERTY_NAME: "data-heading-id",
   TOC_WRAPPER_NAV: "toc-wrapper-nav",
-  TOC_LINK_DEFAULT_CLASS_NAME: "opacity-70",
+  TOC_LINK_DEFAULT_CLASS_NAME: "hover:font-bold",
 };
