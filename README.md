@@ -1,4 +1,4 @@
-<h1 align="center">return-fetch</h1>
+<h1 align="center">⛓️ return-fetch</h1>
 
 <p align="center">
   A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
@@ -7,7 +7,7 @@
   </a>
   or
   <a href="https://stackblitz.com/edit/return-fetch" target="_blank">
-    <strong>Demo</strong>
+    <strong>demo</strong>
   </a>
   .
 </p>
@@ -22,6 +22,16 @@
   <a href="https://raw.githubusercontent.com/deer-develop/return-fetch/main/LICENSE">
     <img src="https://img.shields.io/npm/l/return-fetch.svg" alt="MIT license" height="18">
   </a>
+</p>
+
+<p align="center">
+· No peer dependencies at all.<br/>
+· Superlight bundle size < 1KB.<br/>
+· 100% TypeScript.<br/>
+· 100% test coverage.<br/>
+· Recursive type definition to chain functions infinitely.<br/>
+· Any execution environment having fetch, even possible for any <code>fetch</code> polyfills.<br/>
+· Pure functional, no classes at all. Just a function and objects.
 </p>
 
 ```ts
@@ -75,10 +85,14 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 
 ## Background
 
-The most disappointing aspect I found when trying to replace Axios with `fetch` was that `fetch` does not have any
-interceptors. I thought surely someone must have implemented it, so I searched for libraries. However, there was no
-library capable of handling various situations, only one that could add a single request and response interceptors to
-the global `fetch`. This is the reason why I decided to implement it myself.
+The [Next.js framework](https://nextjs.org/)(which I love so much) [v13 App Router](https://nextjs.org/docs/app) uses
+[its own `fetch` which extends `node-fetch`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
+server side things like caching. I was accustomed to using [Axios](https://github.com/axios/axios) for API calls, but
+I have felt that now is the time to replace Axios with `fetch` finally. The most disappointing aspect I found when
+trying to replace Axios with `fetch` was that `fetch` does not have any interceptors. I thought surely someone
+must have implemented it, so I searched for libraries. However, there was no library capable of handling various
+situations, only one that could add a single request and response interceptors to the global `fetch`. This is the
+reason why I decided to implement it myself.
 
 ### Philosophy
 
@@ -114,6 +128,10 @@ Via pnpm
 ```bash
 pnpm add return-fetch
 ```
+
+## Demo
+
+Run on <a href="https://stackblitz.com/edit/return-fetch" target="_blank">Stickblitz</a>.
 
 ## Usage
 
@@ -260,7 +278,7 @@ fetchExtended("/sample/api/echo", {
 }).catch((e) => { alert(e.message); });
 ```
 
-### #5. Use any `fetch` implementation.
+### #5. Use any `fetch` implementation
 
 `fetch` has been added since [Node.js v17.5 as an experimental feature](https://nodejs.org/tr/blog/release/v17.5.0),
 also available from [Node.js v16.15](https://nodejs.org/tr/blog/release/v16.15.0) and

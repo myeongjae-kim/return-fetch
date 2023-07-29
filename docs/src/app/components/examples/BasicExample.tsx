@@ -7,7 +7,8 @@ import Button from "@/app/components/Button";
 import returnFetch from "return-fetch";
 import { strings } from "@/app/common/strings";
 
-export const basicExampleCode = `\`\`\`ts
+export const basicExampleCode = `
+\`\`\`ts
 import returnFetch from "return-fetch";
 
 const fetchExtended = returnFetch({

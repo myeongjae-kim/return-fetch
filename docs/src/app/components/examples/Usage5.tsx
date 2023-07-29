@@ -141,9 +141,9 @@ const Usage5 = (): React.JSX.Element => {
     <div>
       {loading && <LoadingIndicator />}
       <MarkdownRenderer
-        markdown={`### #5. Use any \`fetch\` implementation.
+        markdown={`### #5. Use any \`fetch\` implementation
 
-\`fetch\` has been added since [Node.js v17.5 as an experimental feature](https://nodejs.org/tr/blog/release/v17.5.0),
+The \`fetch\` has been added since [Node.js v17.5 as an experimental feature](https://nodejs.org/tr/blog/release/v17.5.0),
 also available from [Node.js v16.15](https://nodejs.org/tr/blog/release/v16.15.0) and
 [still experimental(29 JUL 2023, v20.5.0)](https://nodejs.org/docs/v20.5.0/api/globals.html#fetch). You can use
 '[node-fetch](https://github.com/node-fetch/node-fetch)' as a polyfill for Node.js v16.15 or lower,

@@ -77,7 +77,7 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
     // For not throwing an error when the response body is empty, get response as text and parse to json.
     const body = await response.text();
 
-    let data = {};
+    let data = {} as T;
     if (body) {
       data = JSON.parse(body);
     }
