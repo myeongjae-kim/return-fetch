@@ -516,7 +516,7 @@ ${outputNextjsFetch}
         markdown={`
 #### #5-5. React Native
 
-(I have not written a documents for React Native yet, but it surely works with React Native becuase it does not have
+(I have not written documents for React Native yet, but it surely works with React Native becuase it does not have
 any dependencies on a specific \`fetch\` implementation.)
 `}
       />
