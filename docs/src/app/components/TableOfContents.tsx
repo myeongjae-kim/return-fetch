@@ -25,18 +25,28 @@ const render = (headings: Heading[], curr = 0): string => {
   const nextDepth = headings[curr + 1].depth;
 
   if (nextDepth > currentDepth) {
+    let addDepth = "";
+    for (let i = currentDepth; i < nextDepth; i++) {
+      addDepth += '<li class="list-none"><ul>';
+    }
+
     return `<li><a class="${
       constants.TOC_LINK_DEFAULT_CLASS_NAME
-    }" href="#${id}">${innerHTML}</a></li><li class="list-none"><ul>${render(
+    }" href="#${id}">${innerHTML}</a></li>${addDepth}${render(
       headings,
       curr + 1,
     )}`;
   }
 
   if (nextDepth < currentDepth) {
+    let minusDepth = "";
+    for (let i = nextDepth; i < currentDepth; i++) {
+      minusDepth += "</ul></li>";
+    }
+
     return `<li><a class="${
       constants.TOC_LINK_DEFAULT_CLASS_NAME
-    }" href="#${id}">${innerHTML}</a></li></ul></li>${render(
+    }" href="#${id}">${innerHTML}</a></li>${minusDepth}${render(
       headings,
       curr + 1,
     )}`;

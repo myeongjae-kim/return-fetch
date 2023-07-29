@@ -10,10 +10,8 @@ import returnFetch, {
 import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
 
-const Usage1 = (): React.JSX.Element => {
-  const [output, setOutput] = React.useState(
-    `${strings.clickRunButton} You will see an alert.`,
-  );
+const Usage3 = (): React.JSX.Element => {
+  const [output, setOutput] = React.useState(`${strings.clickRunButton}`);
 
   const returnFetchJson = React.useCallback(
     (args?: ReturnFetchDefaultOptions) => {
@@ -31,9 +29,9 @@ const Usage1 = (): React.JSX.Element => {
         // get response as text and parse json for not throwing an error when the response body is empty.
         const body = await response.text();
 
-        let data = {};
+        let data = {} as T;
         if (body) {
-          data = (JSON.parse(body) as ApiResponse<T>).data;
+          data = JSON.parse(body);
         }
 
         return {
@@ -81,7 +79,7 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
 
     let data = {};
     if (body) {
-      data = (JSON.parse(body) as ApiResponse<T>).data;
+      data = JSON.parse(body);
     }
 
     return {
@@ -97,9 +95,9 @@ export const fetchExtended = returnFetchJson({
 });
 
 //////////////////// Use it somewhere ////////////////////
-fetchExtended("/sample/api/echo", {
+fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
   method: "POST",
-  body: { message: "this is an object of \`ApiResponse['data']\`" }, // body should be an object.
+  body: { message: "Hello, world!" }, // body should be an object.
 }).then(it => it.body);
 \`\`\`
 `}
@@ -108,10 +106,13 @@ fetchExtended("/sample/api/echo", {
         <Button
           onClick={() => {
             setOutput("Loading...");
-            fetch<{ message: string }>("/sample/api/echo?delay=200", {
-              method: "POST",
-              body: { message: "this is an object of `ApiResponse['data']`" },
-            })
+            fetch<ApiResponse<{ message: string }>>(
+              "/sample/api/echo?delay=200",
+              {
+                method: "POST",
+                body: { message: "Hello, world!" },
+              },
+            )
               .then((it) => it.body)
               .then((it) => {
                 setOutput(JSON.stringify(it, null, 2));
@@ -131,4 +132,4 @@ ${output}
   );
 };
 
-export default Usage1;
+export default Usage3;

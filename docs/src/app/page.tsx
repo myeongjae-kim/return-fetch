@@ -7,6 +7,8 @@ import Usage1 from "@/app/components/examples/Usage1";
 import Usage2 from "@/app/components/examples/Usage2";
 import Usage3 from "@/app/components/examples/Usage3";
 import Usage4 from "@/app/components/examples/Usage4";
+import Usage5 from "@/app/components/examples/Usage5";
+import Usage6 from "@/app/components/examples/Usage6";
 
 export default function Home() {
   return (
@@ -20,6 +22,8 @@ export default function Home() {
           <Usage2 />
           <Usage3 />
           <Usage4 />
+          <Usage5 />
+          <Usage6 />
           <div className={"mb-24"}>
             <h2 id={"license"}>License</h2>
             MIT ©{" "}

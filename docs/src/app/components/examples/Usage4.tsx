@@ -12,7 +12,7 @@ import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
 import LoadingIndicator from "@/app/components/LoadingIndicator";
 
-const Usage1 = (): React.JSX.Element => {
+const Usage4 = (): React.JSX.Element => {
   const [loading, setLoading] = React.useState(false);
   const [output, setOutput] = React.useState(
     `${strings.clickRunButton} You will see a loading indicator.`,
@@ -178,4 +178,4 @@ ${output}
   );
 };
 
-export default Usage1;
+export default Usage4;

@@ -6,7 +6,7 @@ import Button from "@/app/components/Button";
 import returnFetch, { ReturnFetch } from "return-fetch";
 import { strings } from "@/app/common/strings";
 
-const Usage1 = (): React.JSX.Element => {
+const Usage2 = (): React.JSX.Element => {
   const output = `${strings.clickRunButton} You will see an alert.`;
 
   const returnFetchThrowingErrorByStatusCode: ReturnFetch = React.useCallback(
@@ -83,4 +83,4 @@ ${output}
   );
 };
 
-export default Usage1;
+export default Usage2;
