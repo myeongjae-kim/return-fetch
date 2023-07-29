@@ -105,7 +105,7 @@ ${strings.clickRunButton}
       </div>
       <strong>Output</strong>
       <div dangerouslySetInnerHTML={{ __html: marked(output) }} />
-      <div>
+      <p>
         To see how powerful it is,{" "}
         <a
           href={
@@ -115,7 +115,7 @@ ${strings.clickRunButton}
           go to an example composing multiple customized{" "}
           <code>returnFetch</code>.
         </a>
-      </div>
+      </p>
     </div>
   );
 };

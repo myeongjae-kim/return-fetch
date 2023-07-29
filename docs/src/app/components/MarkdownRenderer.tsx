@@ -39,7 +39,6 @@ const MarkdownRenderer = (
     <div
       ref={ref}
       style={{ overflowWrap: "anywhere", ...style }}
-      className="leading-[1.8]"
       {...props}
       dangerouslySetInnerHTML={{ __html: html }}
     />
