@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import IconLinkButton from "@/app/components/IconLinkButton";
 import GithubIcon from "@/app/components/GithubIcon";
 import ClientDependencyContainer from "@/app/containers/ClientDependencyContainer";
+import NpmIcon from "@/app/components/NpmIcon";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,14 @@ export default function RootLayout({
       <body className={inter.className}>
         <header className={"flex justify-end p-2"}>
           <IconLinkButton
+            className={"text-black hover:text-red-500"}
+            aria-label="Open on npmjs"
+            href="https://npmjs.com/package/return-fetch"
+          >
+            <NpmIcon />
+          </IconLinkButton>
+          <IconLinkButton
+            className={"text-black hover:text-black"}
             aria-label="Open on GitHub"
             href="https://github.com/deer-develop/return-fetch"
           >
