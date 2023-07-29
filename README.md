@@ -2,7 +2,14 @@
 
 <p align="center">
   A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
-  <a href="https://stackblitz.com/edit/return-fetch" target="_blank"><strong>See Demo</strong></a>.
+  <a href="https://return-fetch.myeongjae.kim" target="_blank">
+    <strong>See interactive documentation</strong>
+  </a>
+  or
+  <a href="https://stackblitz.com/edit/return-fetch" target="_blank">
+    <strong>Demo</strong>
+  </a>
+  .
 </p>
 
 <p align="center">
@@ -110,7 +117,418 @@ pnpm add return-fetch
 
 ## Usage
 
-TBD
+### #1. Display/Hide loading indicator
+
+```ts
+import returnFetch, { ReturnFetch } from "return-fetch";
+import { displayLoadingIndicator, hideLoadingIndicator } from "@/your/adorable/loading/indicator";
+
+// Write your own high order function to display/hide loading indicator
+const returnFetchWithLoadingIndicator: ReturnFetch = (args) => returnFetch({
+  ...args,
+  interceptors: {
+    request: async (args) => {
+      setLoading(true);
+      return args;
+    },
+    response: async (requestArgs, response) => {
+      setLoading(false);
+      return response;
+    },
+  },
+})
+
+// Create an extended fetch function and use it instead of the global fetch.
+export const fetchExtended = returnFetchWithLoadingIndicator({
+  // default options
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended("/sample/api");
+```
+
+### #2. Throw an error if a response status is more than or equal to 400.
+
+```ts
+import returnFetch, { ReturnFetch } from "return-fetch";
+
+// Write your own high order function to throw an error if a response status is more than or equal to 400.
+const returnFetchThrowingErrorByStatusCode: ReturnFetch = (args) => returnFetch({
+  ...args,
+  interceptors: {
+    response: async (_, response) => {
+      if (response.status >= 400) {
+        throw await response.text().then(Error);
+      }
+
+      return response;
+    },
+  },
+})
+
+// Create an extended fetch function and use it instead of the global fetch.
+export const fetchExtended = returnFetchThrowingErrorByStatusCode({
+  // default options
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended("/sample/api/400").catch((e) => { alert(e.message); });
+```
+
+### #3. Serialize request body and deserialize response body.
+
+```ts
+import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
+
+export type ApiResponse<T> = {
+  status: number;
+  statusText: string;
+  data: T;
+};
+
+// Write your own high order function to serialize request body and deserialize response body.
+const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
+  const fetch = returnFetch(args);
+
+  return async <T extends object>(
+    url: FetchArgs[0],
+    init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
+  ) => {
+    const response = await fetch(url, {
+      ...init,
+      body: init?.body && JSON.stringify(init.body),
+    });
+
+    // For not throwing an error when the response body is empty, get response as text and parse to json.
+    const body = await response.text();
+
+    let data = {} as T;
+    if (body) {
+      data = JSON.parse(body);
+    }
+
+    return {
+      ...response,
+      body: data,
+    };
+  };
+};
+
+// Create an extended fetch function and use it instead of the global fetch.
+export const fetchExtended = returnFetchJson({
+  // default options
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
+  method: "POST",
+  body: { message: "Hello, world!" }, // body should be an object.
+}).then(it => it.body);
+```
+
+### #4. Compose above three high order functions to create your awesome fetch 🥳
+
+Because of the recursive type definition, you can chain extended returnFetch functions as many as you want. It allows
+you to write extending functions which are responsible only for a single feature. Sticking to the Single Responsibility
+Principle and writing a reusable function is a good practice to write clean code.
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+
+/*
+  Compose high order functions to create your awesome fetch.
+   1. Add loading indicator.
+   2. Throw an error when the response status code is 400 or more.
+   3. Serialize request body and deserialize response body as json and return it.
+*/
+export const fetchExtended = returnFetchJson({
+  fetch: returnFetchThrowingErrorByStatusCode({
+    fetch: returnFetchWithLoadingIndicator({
+      // default options
+    }),
+  }),
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended("/sample/api/echo", {
+  method: "POST",
+  body: { message: "this is an object of `ApiResponse['data']`" }, // body should be an object.
+}).catch((e) => { alert(e.message); });
+```
+
+### #5. Use any `fetch` implementation.
+
+`fetch` has been added since [Node.js v17.5 as an experimental feature](https://nodejs.org/tr/blog/release/v17.5.0),
+also available from [Node.js v16.15](https://nodejs.org/tr/blog/release/v16.15.0) and
+[still experimental(29 JUL 2023, v20.5.0)](https://nodejs.org/docs/v20.5.0/api/globals.html#fetch). You can use
+'[node-fetch](https://github.com/node-fetch/node-fetch)' as a polyfill for Node.js v16.15 or lower,
+or '[whatwg-fetch](https://github.com/JakeChampion/fetch)' for old web browsers, or
+'[cross-fetch](https://github.com/lquixada/cross-fetch)' for both web browser and Node.js.
+
+Next.js has already included 'node-fetch' and
+[they extend it for server-side things like caching](https://nextjs.org/docs/app/api-reference/functions/fetch).
+
+Whatever a `fetch` you use, you can use `return-fetch` as long as the `fetch` you use is compatible with the
+[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). <span class="opacity-60 text-[0.8em]">(It is
+`string | URL` which is a type of first argument of `fetch` created by `return-fetch`. It does not support
+`Request` object as a first argument of a customized `fetch` yet. If you need to use `Request` object, please
+wait or [contribute💙](https://github.com/deer-develop/return-fetch/issues/1))</span>
+
+#### #5-1. `node-fetch`
+
+I implemented a simple proxy for https://postman-echo.com with `node-fetch` as an example using
+[Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
+
+```ts
+// src/app/sample/api/proxy/postman-echo/node-fetch/[[...path]]/route.ts
+import { NextRequest } from "next/server";
+import nodeFetch from "node-fetch";
+import returnFetch, { ReturnFetchDefaultOptions } from "return-fetch";
+
+const pathPrefix = "/sample/api/proxy/postman-echo/node-fetch";
+
+export async function GET(request: NextRequest) {
+  const { nextUrl, method, headers } = request;
+
+  const fetch = returnFetch({
+    // Use node-fetch instead of global fetch
+    fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
+    baseUrl: "https://postman-echo.com",
+  });
+
+  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+    method,
+    headers,
+  });
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+```
+
+Send a request to the proxy route.
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+
+export const fetchExtended = returnFetchJson({
+  fetch: returnFetchThrowingErrorByStatusCode({
+    fetch: returnFetchWithLoadingIndicator({
+      baseUrl: "https://return-fetch.myeongjae.kim",
+    }),
+  }),
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended(
+  "/sample/api/proxy/postman-echo/node-fetch/get",
+  {
+    headers: {
+      "X-My-Custom-Header": "Hello World!"
+    }
+  },
+);
+```
+
+#### #5-2. `whatwg-fetch`
+
+`whatwg-fetch` is a polyfill for browsers. I am going to send a request using `whatwg-fetch` to the proxy route.
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+import { fetch as whatwgFetch } from "whatwg-fetch";
+
+export const fetchExtended = returnFetchJson({
+  fetch: returnFetchThrowingErrorByStatusCode({
+    fetch: returnFetchWithLoadingIndicator({
+      fetch: whatwgFetch, // use whatwgFetch instead of browser's global fetch
+      baseUrl: "https://return-fetch.myeongjae.kim",
+    }),
+  }),
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended(
+  "/sample/api/proxy/postman-echo/node-fetch/get",
+  {
+    headers: {
+      "X-My-Custom-Header": "Hello World!"
+    }
+  },
+);
+```
+
+#### #5-3. `cross-fetch`
+
+I implemented a simple proxy for https://postman-echo.com with `cross-fetch` as an example using
+[Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
+
+```ts
+// src/app/sample/api/proxy/postman-echo/cross-fetch/[[...path]]/route.ts
+import { NextRequest } from "next/server";
+import crossFetch from "cross-fetch";
+import returnFetch from "return-fetch";
+
+const pathPrefix = "/sample/api/proxy/postman-echo/cross-fetch";
+
+export async function GET(request: NextRequest) {
+  const { nextUrl, method, headers } = request;
+
+  const fetch = returnFetch({
+    fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
+    baseUrl: "https://postman-echo.com",
+  });
+
+  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+    method,
+    headers,
+  });
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+```
+
+Send a request to the proxy route using `cross-fetch` on the client-side also.
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+import crossFetch from "cross-fetch";
+
+export const fetchExtended = returnFetchJson({
+  fetch: returnFetchThrowingErrorByStatusCode({
+    fetch: returnFetchWithLoadingIndicator({
+      fetch: crossFetch, // Use cross-fetch instead of browser's global fetch
+      baseUrl: "https://return-fetch.myeongjae.kim",
+    }),
+  }),
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended(
+  "/sample/api/proxy/postman-echo/node-fetch/get",
+  {
+    headers: {
+      "X-My-Custom-Header": "Hello World!"
+    }
+  },
+);
+```
+
+#### #5-4. Next.js built-in `fetch`
+
+I implemented a simple proxy for https://postman-echo.com with Next.js built-in `fetch` as an example using
+[Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
+
+```ts
+// src/app/sample/api/proxy/postman-echo/nextjs-fetch/[[...path]]/route.ts
+import { NextRequest } from "next/server";
+import returnFetch from "return-fetch";
+
+const pathPrefix = "/sample/api/proxy/postman-echo/nextjs-fetch";
+
+export async function GET(request: NextRequest) {
+  const { nextUrl, method, headers } = request;
+
+  const fetch = returnFetch({
+    // omit fetch option to use Next.js built-in fetch
+    baseUrl: "https://postman-echo.com",
+  });
+
+  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+    method,
+    headers,
+  });
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+```
+
+Send a request to the proxy route using web browser default `fetch`.
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+
+export const fetchExtended = returnFetchJson({
+  fetch: returnFetchThrowingErrorByStatusCode({
+    fetch: returnFetchWithLoadingIndicator({
+      baseUrl: "https://return-fetch.myeongjae.kim",
+    }),
+  }),
+});
+
+//////////////////// Use it somewhere ////////////////////
+fetchExtended(
+  "/sample/api/proxy/postman-echo/nextjs-fetch/get",
+  {
+    headers: {
+      "X-My-Custom-Header": "Hello World!"
+    }
+  },
+);
+```
+
+#### #5-5. React Native
+
+(I have not written a documents for React Native yet, but it surely works with React Native becuase it does not have
+any dependencies on a specific `fetch` implementation.)
+
+### #6. Replace default `fetch` with your customized `returnFetch`
+
+```ts
+import {
+  returnFetchJson,
+  returnFetchThrowingErrorByStatusCode,
+  returnFetchWithLoadingIndicator
+} from "@/your/customized/return-fetch";
+
+// save global fetch reference.
+const globalFetch = fetch;
+export const fetchExtended = returnFetchThrowingErrorByStatusCode({
+  fetch: returnFetchWithLoadingIndicator({
+    fetch: globalFetch, // use global fetch as a base.
+  }),
+});
+
+// replace global fetch with your customized fetch.
+window.fetch = fetchExtended;
+
+//////////////////// Use it somewhere ////////////////////
+fetch("/sample/api/echo", {
+  method: "POST",
+  body: JSON.stringify({ message: "Hello, world!" })
+}).catch((e) => { alert(e.message); });
+```
 
 ## License
 
