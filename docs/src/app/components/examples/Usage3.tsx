@@ -26,7 +26,7 @@ const Usage3 = (): React.JSX.Element => {
           body: init?.body && JSON.stringify(init.body),
         });
 
-        // get response as text and parse json for not throwing an error when the response body is empty.
+        // get response as text and parse json for not throwing an error when a response body is empty.
         const body = await response.text();
 
         let data = {} as T;
@@ -74,7 +74,7 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       body: init?.body && JSON.stringify(init.body),
     });
 
-    // For not throwing an error when the response body is empty, get response as text and parse to json.
+    // For not throwing an error when a response body is empty, get response as text and parse to json.
     const body = await response.text();
 
     let data = {} as T;

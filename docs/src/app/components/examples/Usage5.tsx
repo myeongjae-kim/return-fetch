@@ -80,7 +80,7 @@ const Usage5 = (): React.JSX.Element => {
           body: init?.body && JSON.stringify(init.body),
         });
 
-        // get response as text and parse json for not throwing an error when the response body is empty.
+        // get response as text and parse json for not throwing an error when a response body is empty.
         const body = await response.text();
 
         let data = {} as T;

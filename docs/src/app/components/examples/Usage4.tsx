@@ -65,7 +65,7 @@ const Usage4 = (): React.JSX.Element => {
           body: init?.body && JSON.stringify(init.body),
         });
 
-        // get response as text and parse json for not throwing an error when the response body is empty.
+        // get response as text and parse json for not throwing an error when a response body is empty.
         const body = await response.text();
 
         let data = {} as T;
@@ -114,7 +114,7 @@ import {
 /*
   Compose high order functions to create your awesome fetch.
    1. Add loading indicator.
-   2. Throw an error when the response status code is 400 or more.
+   2. Throw an error when a response's status code is 400 or more.
    3. Serialize request body and deserialize response body as json and return it.
 */
 export const fetchExtended = returnFetchJson({
