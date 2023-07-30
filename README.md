@@ -1,15 +1,15 @@
 <h1 align="center">⛓️ return-fetch</h1>
 
 <p align="center">
-  A very light and simple library to extend <code>fetch</code> by implementing request, response interceptors.
+  A simple and powerful high order function to extend <code>fetch</code> for baseURL, default headers, and
+interceptors. <br/>
   <a href="https://return-fetch.myeongjae.kim" target="_blank">
     <strong>See interactive documentation</strong>
   </a>
   or
   <a href="https://stackblitz.com/edit/return-fetch" target="_blank">
-    <strong>demo</strong>
+    <strong>demo</strong>.
   </a>
-  .
 </p>
 
 <p align="center">
@@ -98,9 +98,9 @@ In implementing the `fetch` interceptors, I considered the following points:
    1. Implementing request and response interceptors
    2. Specifying a baseUrl
    3. Setting a default header
-2. **No peer dependencies**. I decided not to use any other libraries. This is because I wanted to keep the library as
-   light as possible, and running any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
-   Native).
+2. **No peer dependencies**. I decided not to use any other libraries. This is because I would like to keep the library
+   as light as possible, and running any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
+   Native, Web Workers).
 3. It should be easy to add interceptors.
 4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
