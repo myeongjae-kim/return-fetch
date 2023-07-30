@@ -24,16 +24,6 @@
   </a>
 </p>
 
-<p align="center">
-· No peer dependencies at all.<br/>
-· Superlight bundle size < 1KB.<br/>
-· 100% TypeScript.<br/>
-· 100% test coverage.<br/>
-· Recursive type definition to chain functions infinitely.<br/>
-· Any execution environment having fetch, even possible for any <code>fetch</code> polyfills.<br/>
-· Pure functional, no classes at all. Just a function and objects.
-</p>
-
 ```ts
 import returnFetch from "return-fetch";
 
@@ -108,6 +98,17 @@ In implementing the `fetch` interceptors, I considered the following points:
 3. It should be easy to add interceptors.
 4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
+
+### Good Things
+
+- Superlight bundle size < 1KB.
+- No peer dependencies.
+- No side effects. Pure functional.
+- No classes. Just a function.
+- Recursive type definition to chain functions infinitely.
+- Any execution environment having fetch, possible for any `fetch` polyfills.
+- 100% TypeScript.
+- 100% test coverage.
 
 ## Installation
 

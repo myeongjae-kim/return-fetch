@@ -25,15 +25,16 @@ In implementing the \`fetch\` interceptors, I considered the following points:
 4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
 
-### Good things
+### Good Things
 
-- No peer dependencies at all. 
-- Superlight bundle size < 1KB. 
-- 100% TypeScript. 
-- 100% test coverage. 
-- Recursive type definition to chain functions infinitely. 
-- Any execution environment having fetch, even possible for any \`fetch\` polyfills. 
-- Pure functional, no classes at all. Just a function and objects.
+- Superlight bundle size < 1KB.
+- No peer dependencies.
+- No side effects. Pure functional.
+- No classes. Just a function.
+- Recursive type definition to chain functions infinitely.
+- Any execution environment having fetch, possible for any \`fetch\` polyfills.
+- 100% TypeScript.
+- 100% test coverage.
 
 ## Installation
 
