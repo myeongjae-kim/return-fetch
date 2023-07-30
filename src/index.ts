@@ -83,23 +83,21 @@ export type ReturnFetchDefaultOptions = {
 };
 
 const applyDefaultOptions = (
-  [url, requestInit]: FetchArgs,
+  [input, requestInit]: FetchArgs,
   defaultOptions?: ReturnFetchDefaultOptions,
 ): FetchArgs => {
   const headers = new Headers(defaultOptions?.headers);
-  [...new Headers(requestInit?.headers).entries()].forEach(([key, value]) => {
+  new Headers(requestInit?.headers).forEach((value, key) => {
     headers.set(key, value);
   });
 
+  let inputToReturn: FetchArgs[0] = input;
+  if (defaultOptions?.baseUrl) {
+    inputToReturn = new URL(input, defaultOptions.baseUrl);
+  }
+
   return [
-    (() => {
-      // ternary operator does not support short circuting after uglifying a bundle, so use 'if' statement instead.
-      if (defaultOptions?.baseUrl) {
-        return new URL(url, defaultOptions.baseUrl);
-      } else {
-        return url;
-      }
-    })(),
+    inputToReturn,
     {
       ...requestInit,
       headers,
@@ -110,12 +108,18 @@ const applyDefaultOptions = (
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
   async (
-    url: string | URL,
-    requestInit?: Parameters<typeof fetch>[1],
+    input: FetchArgs[0],
+    requestInit?: FetchArgs[1],
   ): Promise<Response> => {
+    if (input instanceof Request) {
+      throw new Error(
+        "Request object as the first argument of fetch is not supported yet.",
+      );
+    }
+
     const fetchProvided = defaultOptions?.fetch ?? fetch;
     const defaultOptionAppliedArgs = applyDefaultOptions(
-      [url, requestInit],
+      [input, requestInit],
       defaultOptions,
     );
 

@@ -30,6 +30,20 @@ describe("returnFetch", () => {
     });
   });
 
+  it("should throw error if a first argument of fetch is Request object.", async () => {
+    // given
+    const fetchExtended = returnFetch();
+
+    // when
+    await expect(
+      (fetchExtended as typeof fetch)(
+        new Request("https://base-url.com/todos/1"),
+      ),
+    ).rejects.toThrowError(
+      "Request object as the first argument of fetch is not supported yet.",
+    );
+  });
+
   it("should call given fetch.", async () => {
     // given
     const givenFetch = vi.fn();
