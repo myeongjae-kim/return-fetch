@@ -18,6 +18,13 @@ export default function Home() {
         <div className={"w-full max-w-3xl xl:max-w-4xl"}>
           <BasicExample />
           <MarkdownRenderer markdown={greetings} />
+          <MarkdownRenderer markdown={"## Types"} />
+          <div>
+            <iframe
+              src={"/docs/types/ReturnFetchDefaultOptions.html"}
+              className={"h-[calc(100vh-100px)] w-full"}
+            ></iframe>
+          </div>
           <Usage1 />
           <Usage2 />
           <Usage3 />

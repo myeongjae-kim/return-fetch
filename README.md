@@ -134,6 +134,10 @@ pnpm add return-fetch
 
 Run on <a href="https://stackblitz.com/edit/return-fetch" target="_blank">Stickblitz</a>.
 
+## Types
+
+https://return-fetch.myeongjae.kim/docs/types/ReturnFetchDefaultOptions.html
+
 ## Usage
 
 ### #1. Display/Hide loading indicator
