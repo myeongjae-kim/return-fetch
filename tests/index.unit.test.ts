@@ -122,7 +122,7 @@ describe("returnFetch", () => {
             { headers: { "X-Force-Set-Header": "force-set-header" } },
           ];
         },
-        response: async (_args, response) => {
+        response: async (response) => {
           mockShouldBeCalledInInterceptors("response interceptor called");
 
           const body: ReadableStream<Uint8Array> = new Blob([
@@ -167,13 +167,13 @@ describe("returnFetch", () => {
     const fetchExtended = returnFetch({
       fetch: myFetch,
       interceptors: {
-        request: async (requestArgs, fetchProvided) => {
-          await fetchProvided("provided fetch called in request interceptor");
+        request: async (requestArgs, fetch) => {
+          await fetch("provided fetch called in request interceptor");
 
           return requestArgs;
         },
-        response: async (_args, response, fetchProvided) => {
-          await fetchProvided("provided fetch called in response interceptor");
+        response: async (response, _, fetch) => {
+          await fetch("provided fetch called in response interceptor");
 
           return response;
         },

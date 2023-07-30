@@ -32,8 +32,8 @@ export type ReturnFetchDefaultOptions = {
       fetch: ReturnFetchDefaultOptions["fetch"],
     ) => Promise<FetchArgs>;
     response?: (
-      requestArgs: FetchArgs,
       response: Response,
+      requestArgs: FetchArgs,
       fetch: ReturnFetchDefaultOptions["fetch"],
     ) => Promise<Response>;
   };
@@ -92,8 +92,8 @@ const returnFetch =
 
     return (
       defaultOptions?.interceptors?.response?.(
-        processedArgs,
         response,
+        processedArgs,
         fetchProvided,
       ) ?? response
     );
