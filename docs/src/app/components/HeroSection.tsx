@@ -19,8 +19,7 @@ const HeroSection = (): React.JSX.Element => {
               </h1>
             </div>
             <p className="mt-4 text-base font-normal text-gray-500 dark:text-gray-400 sm:text-xl md:mx-auto md:max-w-xl">
-              Write functions adding features to <code>fetch</code> and compose
-              them to create your own extended one.
+              baseURL, default headers, interceptors.
             </p>
           </div>
         </div>

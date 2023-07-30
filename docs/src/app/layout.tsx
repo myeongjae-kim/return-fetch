@@ -11,8 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 const title =
   "⛓️return-fetch :: A simple and powerful high order function to extend fetch";
-const description =
-  "Write your own functions to extend `fetch` and compose them.";
+const description = "baseURL, default headers, interceptors.";
 
 export const metadata: Metadata = {
   title,
