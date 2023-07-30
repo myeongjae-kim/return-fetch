@@ -1,4 +1,25 @@
+/**
+ * A simple and powerful high order function to extend fetch.
+ *
+ * @packageDocumentation
+ */
+
+/**
+ * Arguments of fetch function.
+ *
+ * fetch function's first argument should be Request object also, but not supported yet.
+ * @see {fetch, RequestInfo, Request}
+ *
+ * @public
+ */
 export type FetchArgs = [string | URL, RequestInit | undefined];
+
+/**
+ * Type of returnFetch function.
+ * It is useful for whom want to write customized returnFetch function.
+ *
+ * @public
+ */
 export type ReturnFetch = typeof returnFetch;
 
 export type ReturnFetchDefaultOptions = {
