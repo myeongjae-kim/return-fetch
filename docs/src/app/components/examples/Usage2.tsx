@@ -14,7 +14,7 @@ const Usage2 = (): React.JSX.Element => {
       returnFetch({
         ...args,
         interceptors: {
-          response: async (_, response) => {
+          response: async (response) => {
             if (response.status >= 400) {
               throw await response.text().then(Error);
             }
@@ -42,7 +42,7 @@ import returnFetch, { ReturnFetch } from "return-fetch";
 const returnFetchThrowingErrorByStatusCode: ReturnFetch = (args) => returnFetch({
   ...args,
   interceptors: {
-    response: async (_, response) => {
+    response: async (response) => {
       if (response.status >= 400) {
         throw await response.text().then(Error);
       }

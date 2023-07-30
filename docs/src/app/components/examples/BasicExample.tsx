@@ -22,7 +22,7 @@ const fetchExtended = returnFetch({
       return args;
     },
 
-    response: async (requestArgs, response) => {
+    response: async (response, requestArgs) => {
       console.log("********* after receiving response *********");
       console.log("url:", requestArgs[0].toString());
       console.log("requestInit:", requestArgs[1], "\\n\\n");
@@ -61,7 +61,7 @@ const fetchExtended = returnFetch({
       return args;
     },
 
-    response: async (requestArgs, response) => {
+    response: async (response, requestArgs) => {
       logs.push("********* after receiving response *********");
       logs.push(`url: "${requestArgs[0]}"`);
       logs.push(

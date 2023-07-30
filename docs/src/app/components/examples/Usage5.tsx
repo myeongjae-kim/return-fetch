@@ -41,7 +41,7 @@ const Usage5 = (): React.JSX.Element => {
             setLoading(true);
             return args;
           },
-          response: async (requestArgs, response) => {
+          response: async (response) => {
             setLoading(false);
             return response;
           },
@@ -55,7 +55,7 @@ const Usage5 = (): React.JSX.Element => {
       returnFetch({
         ...args,
         interceptors: {
-          response: async (_, response) => {
+          response: async (response) => {
             if (response.status >= 400) {
               throw await response.text().then(Error);
             }

@@ -22,7 +22,7 @@ const Usage1 = (): React.JSX.Element => {
             setLoading(true);
             return args;
           },
-          response: async (requestArgs, response) => {
+          response: async (response) => {
             setLoading(false);
             return response;
           },
@@ -57,7 +57,7 @@ const returnFetchWithLoadingIndicator: ReturnFetch = (args) => returnFetch({
       setLoading(true);
       return args;
     },
-    response: async (requestArgs, response) => {
+    response: async (response) => {
       setLoading(false);
       return response;
     },
@@ -78,7 +78,7 @@ fetchExtended("/sample/api");
         <Button
           onClick={() => {
             setOutput("Loading...");
-            fetch("/sample/api?delay=1000")
+            fetch("/sample/api?delay=200")
               .then((it) => it.json())
               .then((it) => {
                 setOutput(JSON.stringify(it, null, 2));
