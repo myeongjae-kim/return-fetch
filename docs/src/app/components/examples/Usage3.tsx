@@ -3,10 +3,7 @@
 import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
-import returnFetch, {
-  FetchArgs,
-  ReturnFetchDefaultOptions,
-} from "return-fetch";
+import returnFetch, { ReturnFetchDefaultOptions } from "return-fetch";
 import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
 
@@ -18,8 +15,10 @@ const Usage3 = (): React.JSX.Element => {
       const fetch = returnFetch(args);
 
       return async <T extends object>(
-        url: FetchArgs[0],
-        init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
+        url: Parameters<typeof fetch>[0],
+        init?: Omit<NonNullable<Parameters<typeof fetch>[1]>, "body"> & {
+          body?: object;
+        },
       ) => {
         const response = await fetch(url, {
           ...init,
@@ -53,7 +52,7 @@ const Usage3 = (): React.JSX.Element => {
         markdown={`### #3. Serialize request body and deserialize response body.
 
 \`\`\`ts
-import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
+import returnFetch, { ReturnFetchDefaultOptions } from "return-fetch";
 
 export type ApiResponse<T> = {
   status: number;
@@ -66,8 +65,10 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
   return async <T extends object>(
-    url: FetchArgs[0],
-    init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
+    url: Parameters<typeof fetch>[0],
+    init?: Omit<NonNullable<Parameters<typeof fetch>[1]>, "body"> & {
+      body?: object;
+    },
   ) => {
     const response = await fetch(url, {
       ...init,

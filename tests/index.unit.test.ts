@@ -24,10 +24,14 @@ describe("returnFetch", () => {
     // when
     await fetchExtended("https://base-url.com/todos/1");
 
-    // then
-    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
-      headers: new Headers(),
-    });
+    expect(fetchMocked.mock.calls[0][0]).toStrictEqual(
+      "https://base-url.com/todos/1",
+    );
+    expect(fetchMocked.mock.calls[0][1]).toStrictEqual(
+      new Request("https://base-url.com/todos/1", {
+        headers: new Headers(),
+      }),
+    );
   });
 
   it("should call given fetch.", async () => {
@@ -39,9 +43,9 @@ describe("returnFetch", () => {
     await fetchExtended("https://base-url.com/todos/1");
 
     // then
-    expect(givenFetch).toHaveBeenCalledWith("https://base-url.com/todos/1", {
-      headers: new Headers(),
-    });
+    expect(givenFetch.mock.calls[0][0]).toStrictEqual(
+      "https://base-url.com/todos/1",
+    );
     expect(fetchMocked).not.toHaveBeenCalled();
   });
 
@@ -52,14 +56,11 @@ describe("returnFetch", () => {
     });
 
     // when
-    await fetchExtended("/todos/1");
+    await fetchExtended("/todos/1?hello=world");
 
     // then
-    expect(fetchMocked).toHaveBeenCalledWith(
-      new URL("https://base-url.com/todos/1"),
-      {
-        headers: new Headers(),
-      },
+    expect(fetchMocked.mock.calls[0][0]).toStrictEqual(
+      "https://base-url.com/todos/1?hello=world",
     );
   });
 
@@ -76,12 +77,17 @@ describe("returnFetch", () => {
     await fetchExtended("https://base-url.com/todos/1");
 
     // then
-    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    expect(fetchMocked.mock.calls[0][0]).toStrictEqual(
+      "https://base-url.com/todos/1",
+    );
+    expect(fetchMocked.mock.calls[0][1]).toStrictEqual(
+      new Request("https://base-url.com/todos/1", {
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }),
       }),
-    });
+    );
   });
 
   it("should override default headers", async () => {
@@ -101,12 +107,17 @@ describe("returnFetch", () => {
     });
 
     // then
-    expect(fetchMocked).toHaveBeenCalledWith("https://base-url.com/todos/1", {
-      headers: new Headers({
-        "Content-Type": "application/json",
-        Accept: "application/json",
+    expect(fetchMocked.mock.calls[0][0]).toStrictEqual(
+      "https://base-url.com/todos/1",
+    );
+    expect(fetchMocked.mock.calls[0][1]).toStrictEqual(
+      new Request("https://base-url.com/todos/1", {
+        headers: new Headers({
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        }),
       }),
-    });
+    );
   });
 
   it("should call request, response interceptors", async () => {
@@ -117,9 +128,14 @@ describe("returnFetch", () => {
       interceptors: {
         request: async () => {
           mockShouldBeCalledInInterceptors("request interceptor called");
+          const url = "https://force-set-url.com";
           return [
-            "https://force-set-url.com",
-            { headers: { "X-Force-Set-Header": "force-set-header" } },
+            url,
+            new Request(url, {
+              headers: {
+                "X-Force-Set-Header": "force-set-header",
+              },
+            }),
           ];
         },
         response: async (response) => {
@@ -147,9 +163,16 @@ describe("returnFetch", () => {
       "response interceptor called",
     );
 
-    expect(fetchMocked).toHaveBeenCalledWith("https://force-set-url.com", {
-      headers: { "X-Force-Set-Header": "force-set-header" },
-    });
+    const url = "https://force-set-url.com";
+    // then
+    expect(fetchMocked.mock.calls[0][0]).toStrictEqual(url);
+    expect(fetchMocked.mock.calls[0][1]).toStrictEqual(
+      new Request(url, {
+        headers: new Headers({
+          "X-Force-Set-Header": "force-set-header",
+        }),
+      }),
+    );
 
     const responseBody = await response.body
       .getReader()
@@ -189,9 +212,15 @@ describe("returnFetch", () => {
       "provided fetch called in request interceptor",
     );
 
-    expect(myFetch).toHaveBeenNthCalledWith(2, "https://base-url.com/todos/1", {
-      headers: new Headers(),
-    });
+    // then
+    expect(myFetch.mock.calls[1][0]).toStrictEqual(
+      "https://base-url.com/todos/1",
+    );
+    expect(myFetch.mock.calls[1][1]).toStrictEqual(
+      new Request("https://base-url.com/todos/1", {
+        headers: new Headers({}),
+      }),
+    );
 
     expect(myFetch).toHaveBeenNthCalledWith(
       3,

@@ -4,7 +4,6 @@ import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
 import returnFetch, {
-  FetchArgs,
   ReturnFetch,
   ReturnFetchDefaultOptions,
 } from "return-fetch";
@@ -57,8 +56,10 @@ const Usage4 = (): React.JSX.Element => {
       const fetch = returnFetch(args);
 
       return async <T extends object>(
-        url: FetchArgs[0],
-        init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
+        url: Parameters<typeof fetch>[0],
+        init?: Omit<NonNullable<Parameters<typeof fetch>[1]>, "body"> & {
+          body?: object;
+        },
       ) => {
         const response = await fetch(url, {
           ...init,

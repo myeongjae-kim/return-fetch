@@ -5,14 +5,14 @@
  */
 
 /**
- * Arguments of fetch function.
+ * Type of `fetch` function.
+ * It is simplified to be used in request, response interceptors.
  *
- * fetch function's first argument should be Request object also, but not supported yet.
- * @see {fetch, RequestInfo, Request}
+ * Before calling request interceptor, `fetch` arguments is preprocessed to be `FetchArgs`.
  *
  * @public
  */
-export type FetchArgs = [string | URL, RequestInit | undefined];
+export type FetchArgs = [string, Request];
 
 /**
  * Type of `returnFetch` function.
@@ -82,52 +82,46 @@ export type ReturnFetchDefaultOptions = {
   };
 };
 
-const applyDefaultOptions = (
-  [url, requestInit]: FetchArgs,
-  defaultOptions?: ReturnFetchDefaultOptions,
-): FetchArgs => {
-  const headers = new Headers(defaultOptions?.headers);
-  [...new Headers(requestInit?.headers).entries()].forEach(([key, value]) => {
-    headers.set(key, value);
-  });
+const getUrlFromFetchParams = ([input]: Parameters<typeof fetch>): string => {
+  if (typeof input === "string") {
+    return input;
+  }
 
-  return [
-    (() => {
-      // ternary operator does not support short circuting after uglifying a bundle, so use 'if' statement instead.
-      if (defaultOptions?.baseUrl) {
-        return new URL(url, defaultOptions.baseUrl);
-      } else {
-        return url;
-      }
-    })(),
-    {
-      ...requestInit,
-      headers,
-    },
-  ];
+  if (input instanceof URL) {
+    return input.href;
+  }
+
+  return input.url;
 };
 
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
-  async (
-    url: string | URL,
-    requestInit?: Parameters<typeof fetch>[1],
-  ): Promise<Response> => {
+  async (...args: Parameters<typeof fetch>): Promise<Response> => {
     const fetchProvided = defaultOptions?.fetch ?? fetch;
-    const defaultOptionAppliedArgs = applyDefaultOptions(
-      [url, requestInit],
-      defaultOptions,
-    );
+
+    const [, requestInit] = args;
+    let url = getUrlFromFetchParams(args);
+    if (defaultOptions?.baseUrl) {
+      url = new URL(url, defaultOptions?.baseUrl).toString();
+    }
+
+    // merge headers
+    const headers = new Headers(defaultOptions?.headers);
+    new Headers(requestInit?.headers).forEach((value, key) => {
+      headers.set(key, value);
+    });
+
+    let processedArgs: FetchArgs = [
+      url,
+      new Request(url, { ...requestInit, headers }),
+    ];
 
     // apply request interceptor
-    let processedArgs: FetchArgs;
     if (defaultOptions?.interceptors?.request) {
       processedArgs = await defaultOptions?.interceptors?.request?.(
-        defaultOptionAppliedArgs,
+        processedArgs,
         fetchProvided,
       );
-    } else {
-      processedArgs = defaultOptionAppliedArgs;
     }
 
     // ajax call and apply response interceptor
