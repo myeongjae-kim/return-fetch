@@ -24,7 +24,7 @@ export const fetchExtended = returnFetchThrowingErrorByStatusCode({
 });
 
 // replace global fetch with your customized fetch.
-window.fetch = fetchExtended;
+globalThis.fetch = fetchExtended;
 
 //////////////////// Use it somewhere ////////////////////
 fetch("/sample/api/echo", {
