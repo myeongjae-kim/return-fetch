@@ -7,7 +7,7 @@
 /**
  * Arguments of fetch function.
  *
- * fetch function's first argument should be Request object also, but not supported yet.
+ * @throws {Error} if a first argument of fetch is `Request` object. only string and URL are supported.
  * @see {fetch, RequestInfo, Request}
  *
  * @public
