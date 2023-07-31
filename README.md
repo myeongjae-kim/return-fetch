@@ -258,8 +258,8 @@ fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
 ### #4. Compose above three high order functions to create your awesome fetch 🥳
 
 Because of the recursive type definition, you can chain extended returnFetch functions as many as you want. It allows
-you to write extending functions which are responsible only for a single feature. Sticking to the Single Responsibility
-Principle and writing a reusable function is a good practice to write clean code.
+you to write extending functions which are responsible only for a single feature. Is a good practice to stick to **the
+Single Responsibility Principle** and writing a reusable function to write clean code.
 
 ```ts
 import {
