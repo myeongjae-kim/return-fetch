@@ -30,20 +30,6 @@ describe("returnFetch", () => {
     });
   });
 
-  it("should throw error if a first argument of fetch is Request object.", async () => {
-    // given
-    const fetchExtended = returnFetch();
-
-    // when
-    await expect(
-      (fetchExtended as typeof fetch)(
-        new Request("https://base-url.com/todos/1"),
-      ),
-    ).rejects.toThrowError(
-      "Request object as the first argument of fetch is not supported yet.",
-    );
-  });
-
   it("should call given fetch.", async () => {
     // given
     const givenFetch = vi.fn();
@@ -211,5 +197,102 @@ describe("returnFetch", () => {
       3,
       "provided fetch called in response interceptor",
     );
+  });
+
+  it("should be able to handle Request object as a first argument.", async () => {
+    // given
+    const fetchExtended = returnFetch();
+    const requestInit: RequestInit = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ hello: "world!" }),
+      referrer: "about:client",
+      referrerPolicy: "origin",
+      mode: "cors",
+      credentials: "same-origin",
+      cache: "default",
+      redirect: "follow",
+      integrity: "integrity",
+      keepalive: true,
+      signal: null,
+      window: null,
+    };
+
+    // when
+    await fetchExtended(
+      new Request("https://base-url.com/todos/1", requestInit),
+    );
+
+    // then
+    expect(fetchMocked.mock.calls[0][0]).toBe("https://base-url.com/todos/1");
+    await expect(
+      new Response(fetchMocked.mock.calls[0][1].body).text(),
+    ).resolves.toBe('{"hello":"world!"}');
+    const { body: _, ...rest } = requestInit;
+
+    const actualRequestInit: RequestInit = fetchMocked.mock.calls[0][1];
+    expect(actualRequestInit.method).toBe(requestInit.method);
+    expect(new Headers(actualRequestInit.headers)).toStrictEqual(
+      requestInit.headers,
+    );
+    expect(actualRequestInit.referrer).toBe(requestInit.referrer);
+    expect(actualRequestInit.referrerPolicy).toBe(requestInit.referrerPolicy);
+    expect(actualRequestInit.mode).toBe(requestInit.mode);
+    expect(actualRequestInit.credentials).toBe(requestInit.credentials);
+    expect(actualRequestInit.cache).toBe(requestInit.cache);
+    expect(actualRequestInit.redirect).toBe(requestInit.redirect);
+    expect(actualRequestInit.integrity).toBe(requestInit.integrity);
+    expect(actualRequestInit.keepalive).toBe(requestInit.keepalive);
+    expect(actualRequestInit.signal).instanceof(AbortSignal);
+    expect(actualRequestInit.window).toBeUndefined();
+  });
+
+  it("should be possible to process when a first argument is Request object and second argument is requestInit.", async () => {
+    // given
+    const fetchExtended = returnFetch();
+    const requestInit: RequestInit = {
+      method: "POST",
+      headers: new Headers({ "Content-Type": "application/json" }),
+      body: JSON.stringify({ hello: "world!" }),
+      referrer: "about:client",
+      referrerPolicy: "origin",
+      mode: "cors",
+      credentials: "same-origin",
+      cache: "default",
+      redirect: "follow",
+      integrity: "integrity",
+      keepalive: true,
+      signal: null,
+      window: null,
+    };
+
+    // when
+    await fetchExtended(
+      new Request("https://base-url.com/todos/1"),
+      requestInit,
+    );
+
+    // then
+    expect(fetchMocked.mock.calls[0][0]).toBe("https://base-url.com/todos/1");
+    await expect(
+      new Response(fetchMocked.mock.calls[0][1].body).text(),
+    ).resolves.toBe('{"hello":"world!"}');
+    const { body: _, ...rest } = requestInit;
+
+    const actualRequestInit: RequestInit = fetchMocked.mock.calls[0][1];
+    expect(actualRequestInit.method).toBe("POST");
+    expect(new Headers(actualRequestInit.headers)).toStrictEqual(
+      requestInit.headers,
+    );
+    expect(actualRequestInit.referrer).toBe(requestInit.referrer);
+    expect(actualRequestInit.referrerPolicy).toBe(requestInit.referrerPolicy);
+    expect(actualRequestInit.mode).toBe(requestInit.mode);
+    expect(actualRequestInit.credentials).toBe(requestInit.credentials);
+    expect(actualRequestInit.cache).toBe(requestInit.cache);
+    expect(actualRequestInit.redirect).toBe(requestInit.redirect);
+    expect(actualRequestInit.integrity).toBe(requestInit.integrity);
+    expect(actualRequestInit.keepalive).toBe(requestInit.keepalive);
+    expect(actualRequestInit.signal).instanceof(AbortSignal);
+    expect(actualRequestInit.window).toBeNull();
   });
 });
