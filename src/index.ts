@@ -129,42 +129,51 @@ const mergeRequestObjectWithRequestInit = (
   }));
 };
 
+const normalizeArgs = async (
+  ...args: Parameters<typeof fetch>
+): Promise<FetchArgs> => {
+  let input: string | URL;
+  let requestInit: RequestInit | undefined;
+  if (args[0] instanceof Request) {
+    input = args[0].url;
+    requestInit = await mergeRequestObjectWithRequestInit(args[0], args[1]);
+  } else {
+    input = args[0];
+    requestInit = args[1];
+  }
+
+  return [input, requestInit];
+};
+
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
   async (...args: Parameters<typeof fetch>): Promise<Response> => {
-    let input: string | URL;
-    let requestInit: RequestInit | undefined = args[1];
-    if (args[0] instanceof Request) {
-      input = args[0].url;
-      requestInit = await mergeRequestObjectWithRequestInit(args[0], args[1]);
-    } else {
-      input = args[0];
-    }
-
-    const fetchProvided = defaultOptions?.fetch || fetch;
     const defaultOptionAppliedArgs = applyDefaultOptions(
-      [input, requestInit],
+      await normalizeArgs(...args),
       defaultOptions,
     );
 
     // apply request interceptor
-    let processedArgs: FetchArgs;
+    const fetchProvided = defaultOptions?.fetch || fetch;
+    let requestInterceptorAppliedArgs: FetchArgs;
     if (defaultOptions?.interceptors?.request) {
-      processedArgs = await defaultOptions?.interceptors?.request?.(
-        defaultOptionAppliedArgs,
-        fetchProvided,
-      );
+      requestInterceptorAppliedArgs =
+        await defaultOptions?.interceptors?.request?.(
+          defaultOptionAppliedArgs,
+          fetchProvided,
+        );
     } else {
-      processedArgs = defaultOptionAppliedArgs;
+      requestInterceptorAppliedArgs = defaultOptionAppliedArgs;
     }
 
-    // ajax call and apply response interceptor
-    const response = await fetchProvided(...processedArgs);
+    // ajax call
+    const response = await fetchProvided(...requestInterceptorAppliedArgs);
 
+    // apply response interceptor
     return (
       defaultOptions?.interceptors?.response?.(
         response,
-        processedArgs,
+        requestInterceptorAppliedArgs,
         fetchProvided,
       ) || response
     );
