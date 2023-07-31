@@ -82,7 +82,7 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 ## Background
 
 The [Next.js framework](https://nextjs.org/)(which I love so much) [v13 App Router](https://nextjs.org/docs/app) uses
-[its own `fetch` which extends `node-fetch`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
+[its own `fetch` that extends `node-fetch`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
 server side things like caching. I was accustomed to using [Axios](https://github.com/axios/axios) for API calls, but
 I have felt that now is the time to replace Axios with `fetch` finally. The most disappointing aspect I found when
 trying to replace Axios with `fetch` was that `fetch` does not have any interceptors. I thought surely someone
@@ -652,6 +652,100 @@ fetchExtended(
 )
   .then((it) => it.json())
   .then(console.log);
+```
+
+### #8. Retry a request
+
+Interceptors are async functions. You can make an async call in interceptors. This example shows how to retry a request
+when a response status is 401.
+
+```ts
+let retryCount = 0;
+
+const returnFetchRetry: ReturnFetch = (args) => returnFetch({
+  ...args,
+  interceptors: {
+    response: async (response, requestArgs, fetch) => {
+      if (response.status !== 401) {
+        return response;
+      }
+
+      console.log("not authorized, trying to get refresh cookie..");
+      const responseToRefreshCookie = await fetch(
+        "https://httpstat.us/200",
+      );
+      if (responseToRefreshCookie.status !== 200) {
+        throw Error("failed to refresh cookie");
+      }
+
+      retryCount += 1;
+      console.log(`(#${retryCount}) succeeded to refresh cookie and retry request`);
+      return fetch(...requestArgs);
+    },
+  },
+});
+
+const fetchExtended = returnFetchRetry({
+  baseUrl: "https://httpstat.us",
+});
+
+fetchExtended("/401")
+  .then((it) => it.text())
+  .then((it) => `Response body: "${it}"`)
+  .then(console.log)
+  .then(() => console.log("\n Total counts of request: " + (retryCount + 1)))
+```
+
+#### #8-1. Doubling retry counts
+
+If you nest `returnFetchRetry`, you can retry a request more than once. When you nest 4 times, you can retry a
+request 16 times (I know it is too much, but isn't it fun?).
+
+```ts
+let retryCount = 0;
+
+// create a fetch function with baseUrl applied
+const fetchBaseUrlApplied = returnFetch({ baseUrl: "https://httpstat.us" });
+
+const returnFetchRetry: ReturnFetch = (args) => returnFetch({
+  ...args,
+  // use fetchBaseUrlApplied as a default fetch function
+  fetch: args?.fetch ?? fetchBaseUrlApplied,
+  interceptors: {
+    response: async (response, requestArgs, fetch) => {
+      if (response.status !== 401) {
+        return response;
+      }
+
+      console.log("not authorized, trying to get refresh cookie..");
+      const responseToRefreshCookie = await fetch(
+        "/200",
+      );
+      if (responseToRefreshCookie.status !== 200) {
+        throw Error("failed to refresh cookie");
+      }
+
+      retryCount += 1;
+      console.log(`(#${retryCount}) succeeded to refresh cookie and retry request`);
+      return fetch(...requestArgs);
+    },
+  },
+});
+
+// nest 4 times -> 2^4 = 16
+const fetchExtended = returnFetchRetry({
+  fetch: returnFetchRetry({
+    fetch: returnFetchRetry({
+      fetch: returnFetchRetry(),
+    }),
+  }),
+});
+
+fetchExtended("/401")
+  .then((it) => it.text())
+  .then((it) => `Response body: "${it}"`)
+  .then(console.log)
+  .then(() => console.log("\n Total counts of request: " + (retryCount + 1)))
 ```
 
 ## License

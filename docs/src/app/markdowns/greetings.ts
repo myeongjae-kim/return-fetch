@@ -2,7 +2,7 @@ export const greetings = `
 ## Background
 
 The [Next.js framework](https://nextjs.org/)(which I love so much) [v13 App Router](https://nextjs.org/docs/app) uses
-[its own \`fetch\` which extends \`node-fetch\`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
+[its own \`fetch\` that extends \`node-fetch\`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
 server side things like caching. I was accustomed to using [Axios](https://github.com/axios/axios) for API calls, but
 I have felt that now is the time to replace Axios with \`fetch\` finally. The most disappointing aspect I found when
 trying to replace Axios with \`fetch\` was that \`fetch\` does not have any interceptors. I thought surely someone

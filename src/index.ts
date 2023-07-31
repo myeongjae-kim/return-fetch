@@ -63,7 +63,7 @@ export type ReturnFetchDefaultOptions = {
      */
     request?: (
       requestArgs: FetchArgs,
-      fetch: ReturnFetchDefaultOptions["fetch"],
+      fetch: NonNullable<ReturnFetchDefaultOptions["fetch"]>,
     ) => Promise<FetchArgs>;
     /**
      * Response interceptor. It will be called after response.
@@ -77,7 +77,7 @@ export type ReturnFetchDefaultOptions = {
     response?: (
       response: Response,
       requestArgs: FetchArgs,
-      fetch: ReturnFetchDefaultOptions["fetch"],
+      fetch: NonNullable<ReturnFetchDefaultOptions["fetch"]>,
     ) => Promise<Response>;
   };
 };
