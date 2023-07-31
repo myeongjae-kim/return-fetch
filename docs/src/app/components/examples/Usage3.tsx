@@ -9,6 +9,11 @@ import returnFetch, {
 } from "return-fetch";
 import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
+import { JsonResponse } from "@/app/domain/model/JsonRespones";
+
+type JsonRequestInit = Omit<NonNullable<FetchArgs[1]>, "body"> & {
+  body?: object;
+};
 
 const Usage3 = (): React.JSX.Element => {
   const [output, setOutput] = React.useState(`${strings.clickRunButton}`);
@@ -19,8 +24,8 @@ const Usage3 = (): React.JSX.Element => {
 
       return async <T extends object>(
         url: FetchArgs[0],
-        init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
-      ) => {
+        init?: JsonRequestInit,
+      ): Promise<JsonResponse<T>> => {
         const response = await fetch(url, {
           ...init,
           body: init?.body && JSON.stringify(init.body),
@@ -35,7 +40,13 @@ const Usage3 = (): React.JSX.Element => {
         }
 
         return {
-          ...response,
+          headers: response.headers,
+          ok: response.ok,
+          redirected: response.redirected,
+          status: response.status,
+          statusText: response.statusText,
+          type: response.type,
+          url: response.url,
           body: data,
         };
       };
@@ -55,10 +66,15 @@ const Usage3 = (): React.JSX.Element => {
 \`\`\`ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
 
-export type ApiResponse<T> = {
-  status: number;
-  statusText: string;
-  data: T;
+// Use as a replacer of \`RequestInit\`
+type JsonRequestInit = Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object };
+
+// Use as a replacer of \`Response\`
+export type JsonResponse<T extends object | null> = Omit<
+  Awaited<ReturnType<typeof fetch>>,
+  keyof Body | "clone"
+> & {
+  body: T;
 };
 
 // Write your own high order function to serialize request body and deserialize response body.
@@ -67,8 +83,8 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
 
   return async <T extends object>(
     url: FetchArgs[0],
-    init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
-  ) => {
+    init?: JsonRequestInit,
+  ): Promise<JsonResponse<T>> => {
     const response = await fetch(url, {
       ...init,
       body: init?.body && JSON.stringify(init.body),
@@ -83,7 +99,13 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
     }
 
     return {
-      ...response,
+      headers: response.headers,
+      ok: response.ok,
+      redirected: response.redirected,
+      status: response.status,
+      statusText: response.statusText,
+      type: response.type,
+      url: response.url,
       body: data,
     };
   };
@@ -95,6 +117,12 @@ export const fetchExtended = returnFetchJson({
 });
 
 //////////////////// Use it somewhere ////////////////////
+export type ApiResponse<T> = {
+  status: number;
+  statusText: string;
+  data: T;
+};
+
 fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
   method: "POST",
   body: { message: "Hello, world!" }, // body should be an object.
