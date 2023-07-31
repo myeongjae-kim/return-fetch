@@ -42,7 +42,7 @@ const Usage8 = (): React.JSX.Element => {
           },
         },
       }),
-    [],
+    [fetchBaseUrlApplied],
   );
 
   const fetchRetry = React.useMemo(() => {
