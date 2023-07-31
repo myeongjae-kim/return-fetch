@@ -75,7 +75,7 @@ const TableOfContents = (): JSX.Element => {
       <nav
         id={constants.TOC_WRAPPER_NAV}
         className={
-          "mb-4 flex hidden max-w-md 2xl:fixed 2xl:left-2 2xl:top-2 2xl:block 2xl:max-w-xs"
+          "mb-4 flex hidden max-h-[calc(100vh-0.5rem)] max-w-md overflow-scroll 2xl:fixed 2xl:left-2 2xl:top-2 2xl:block 2xl:max-w-xs"
         }
       >
         <div
