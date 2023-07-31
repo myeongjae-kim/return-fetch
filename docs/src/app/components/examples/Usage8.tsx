@@ -51,14 +51,16 @@ const Usage8 = (): React.JSX.Element => {
     });
   }, [returnFetchRetry]);
 
-  const fetchRetryCubic = React.useMemo(() => {
-    return returnFetchRetry({
-      fetch: returnFetchRetry({
-        fetch: returnFetchRetry({
-          fetch: returnFetchRetry(),
-        }),
-      }),
-    });
+  const fetchRetryNested = React.useMemo(() => {
+    const nest = (
+      remaining: number,
+      providedFetch = fetchBaseUrlApplied,
+    ): ReturnType<ReturnFetch> =>
+      remaining > 0
+        ? nest(remaining - 1, returnFetchRetry({ fetch: providedFetch }))
+        : providedFetch;
+
+    return nest(4);
   }, [returnFetchRetry]);
 
   return (
@@ -170,14 +172,16 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   },
 });
 
+const nest = (
+  remaining: number,
+  providedFetch = fetchBaseUrlApplied,
+): ReturnType<ReturnFetch> =>
+  remaining > 0
+    ? nest(remaining - 1, returnFetchRetry({ fetch: providedFetch }))
+    : providedFetch;
+
 // nest 4 times -> 2^4 = 16
-const fetchExtended = returnFetchRetry({
-  fetch: returnFetchRetry({
-    fetch: returnFetchRetry({
-      fetch: returnFetchRetry(),
-    }),
-  }),
-});
+const fetchExtended = nest(4);
 
 fetchExtended("/401")
   .then((it) => it.text())
@@ -192,7 +196,7 @@ fetchExtended("/401")
           onClick={() => {
             retryCount.current = 0;
             setOutput("Loading...");
-            fetchRetryCubic("/401")
+            fetchRetryNested("/401")
               .then((it) => it.text())
               .then((it) => `Response body: "${it}"`)
               .then(appendOutput)
