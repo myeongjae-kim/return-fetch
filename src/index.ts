@@ -105,19 +105,43 @@ const applyDefaultOptions = (
   ];
 };
 
+// To handle Request object we need to read body as ArrayBuffer.
+// If you have a better way, please let me know.
+const mergeRequestObjectWithRequestInit = (
+  request: Request,
+  requestInit?: RequestInit,
+): Promise<RequestInit> => {
+  const mergedRequest = new Request(request, requestInit);
+  return new Response(mergedRequest.body).arrayBuffer().then((body) => ({
+    method: mergedRequest.method,
+    headers: mergedRequest.headers,
+    body: body,
+    referrer: mergedRequest.referrer,
+    referrerPolicy: mergedRequest.referrerPolicy,
+    mode: mergedRequest.mode,
+    credentials: mergedRequest.credentials,
+    cache: mergedRequest.cache,
+    redirect: mergedRequest.redirect,
+    integrity: mergedRequest.integrity,
+    keepalive: mergedRequest.keepalive,
+    signal: mergedRequest.signal,
+    window: requestInit?.window,
+  }));
+};
+
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
-  async (
-    input: FetchArgs[0],
-    requestInit?: FetchArgs[1],
-  ): Promise<Response> => {
-    if (input instanceof Request) {
-      throw new Error(
-        "Request object as the first argument of fetch is not supported yet.",
-      );
+  async (...args: Parameters<typeof fetch>): Promise<Response> => {
+    let input: string | URL;
+    let requestInit: RequestInit | undefined = args[1];
+    if (args[0] instanceof Request) {
+      input = args[0].url;
+      requestInit = await mergeRequestObjectWithRequestInit(args[0], args[1]);
+    } else {
+      input = args[0];
     }
 
-    const fetchProvided = defaultOptions?.fetch ?? fetch;
+    const fetchProvided = defaultOptions?.fetch || fetch;
     const defaultOptionAppliedArgs = applyDefaultOptions(
       [input, requestInit],
       defaultOptions,
@@ -142,7 +166,7 @@ const returnFetch =
         response,
         processedArgs,
         fetchProvided,
-      ) ?? response
+      ) || response
     );
   };
 

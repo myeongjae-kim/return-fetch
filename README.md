@@ -1,7 +1,7 @@
 <h1 align="center">⛓️ return-fetch</h1>
 
 <p align="center">
-  A simple and powerful high order function to extend <code>fetch</code> for baseURL, default headers, and
+  A simple and powerful high order function to extend <code>fetch</code> for baseUrl, default headers, and
 interceptors. <br/>
   <a href="https://return-fetch.myeongjae.kim" target="_blank">
     <strong>See interactive documentation</strong>
@@ -560,6 +560,98 @@ fetch("/sample/api/echo", {
   method: "POST",
   body: JSON.stringify({ message: "Hello, world!" })
 }).catch((e) => { alert(e.message); });
+```
+
+### #7. Use `URL` or `Request` object as a first argument of `fetch`
+
+The type of a first argument of `fetch` is `Request | string | URL` and a second argument is
+`RequestInit | undefined`. Through above examples, we used a string as a first argument of `fetch`.
+`return-fetch` is also able to handle a `Request` or `URL` object as a first argument. It does not restrict
+any features of `fetch`.
+
+**Be careful! the default options' baseURL does not applied to a `URL` or `Request` object.** Default headers are
+still applied to a `Request` object as you expected.
+
+#### #7-1. `URL` object as a first argument
+
+Even a `baseUrl` is set to 'https://google.com', it is not applied to a `URL` object. An `URL` object cannot be
+created if an argument does not have origin. You should set a full `URL` to a `URL` object, so a `baseUrl` will
+be ignored.
+
+```ts
+import returnFetch from "return-fetch";
+
+const fetchExtended = returnFetch({
+  baseUrl: "https://google.com",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-My-Header": "Hello, world!",
+  },
+});
+
+fetchExtended(
+  /*
+    Even a baseURL is set to 'https://google.com', it is not applied to a URL object.
+    An URL object cannot be created if an argument does not have origin.
+    You should set a full URL to a URL object, so a baseURL will be ignored.
+  */
+  new Request(new URL("https://return-fetch.myeongjae.kim/sample/api/proxy/postman-echo/nextjs-fetch/post"), {
+    method: "PUT",
+    body: JSON.stringify({ message: "overwritten by requestInit" }),
+    headers: {
+      "X-My-Headers-In-Request-Object": "Works well!",
+    },
+  }),
+  {
+    method: "POST",
+    body: JSON.stringify({ message: "Hello, world!" }),
+  },
+)
+  .then((it) => it.json())
+  .then(console.log);
+```
+
+#### #7-2. `Request` object as a first argument
+
+Even a `baseUrl` is set to 'https://google.com', it is not applied to a `Request` object. While creating a
+`Request` object, an origin is set to 'https://return-fetch.myeongjae.kim', which is the origin of this page,
+so `baseUrl` will be ignored.
+
+On Node.js, a `Request` object cannot be created without an origin, same as `URL` object.
+
+```ts
+import returnFetch from "return-fetch";
+
+const fetchExtended = returnFetch({
+  baseUrl: "https://google.com",
+  headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "X-My-Header": "Hello, world!",
+  },
+});
+
+fetchExtended(
+  /*
+    Even a baseURL is set to 'https://google.com', it is not applied to a Request object.
+    While creating a Request object, an origin is set to 'https://return-fetch.myeongjae.kim',
+    which is the origin of this page, so baseURL will be ignored.
+  */
+  new Request("/sample/api/proxy/postman-echo/node-fetch/post", {
+    method: "PUT",
+    body: JSON.stringify({ message: "overwritten by requestInit" }),
+    headers: {
+      "X-My-Headers-In-Request-Object": "Works well!",
+    },
+  }),
+  {
+    method: "POST",
+    body: JSON.stringify({ message: "Hello, world!" }),
+  },
+)
+  .then((it) => it.json())
+  .then(console.log);
 ```
 
 ## License
