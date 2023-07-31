@@ -1,2 +1,2 @@
 main:
-	npm run setup
+	pnpm run setup
