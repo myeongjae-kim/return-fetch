@@ -10,10 +10,7 @@ import returnFetch, {
 import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
 import { JsonResponse } from "@/app/domain/model/JsonRespones";
-
-type JsonRequestInit = Omit<NonNullable<FetchArgs[1]>, "body"> & {
-  body?: object;
-};
+import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
 
 const Usage3 = (): React.JSX.Element => {
   const [output, setOutput] = React.useState(`${strings.clickRunButton}`);

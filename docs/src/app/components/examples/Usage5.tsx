@@ -14,6 +14,8 @@ import LoadingIndicator from "@/app/components/LoadingIndicator";
 // @ts-ignore
 import { fetch as whatwgFetch } from "whatwg-fetch";
 import crossFetch from "cross-fetch";
+import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
+import { JsonResponse } from "@/app/domain/model/JsonRespones";
 
 const Usage5 = (): React.JSX.Element => {
   const [loading, setLoading] = React.useState(false);
@@ -73,8 +75,8 @@ const Usage5 = (): React.JSX.Element => {
 
       return async <T extends object>(
         url: FetchArgs[0],
-        init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
-      ) => {
+        init?: JsonRequestInit,
+      ): Promise<JsonResponse<T>> => {
         const response = await fetch(url, {
           ...init,
           body: init?.body && JSON.stringify(init.body),
@@ -89,7 +91,13 @@ const Usage5 = (): React.JSX.Element => {
         }
 
         return {
-          ...response,
+          headers: response.headers,
+          ok: response.ok,
+          redirected: response.redirected,
+          status: response.status,
+          statusText: response.statusText,
+          type: response.type,
+          url: response.url,
           body: data,
         };
       };
