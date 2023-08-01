@@ -3,57 +3,14 @@
 import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
-import returnFetch, {
-  FetchArgs,
-  ReturnFetchDefaultOptions,
-} from "return-fetch";
 import { strings } from "@/app/common/strings";
 import { ApiResponse } from "@/app/domain/model/ApiResponse";
-import { JsonResponse } from "@/app/domain/model/JsonRespones";
-import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
+import { returnFetchJson } from "@/app/domain/application/returnFetchJson";
+
+const fetch = returnFetchJson();
 
 const Usage3 = (): React.JSX.Element => {
   const [output, setOutput] = React.useState(`${strings.clickRunButton}`);
-
-  const returnFetchJson = React.useCallback(
-    (args?: ReturnFetchDefaultOptions) => {
-      const fetch = returnFetch(args);
-
-      return async <T extends object>(
-        url: FetchArgs[0],
-        init?: JsonRequestInit,
-      ): Promise<JsonResponse<T>> => {
-        const response = await fetch(url, {
-          ...init,
-          body: init?.body && JSON.stringify(init.body),
-        });
-
-        // get response as text and parse json for not throwing an error when a response body is empty.
-        const body = await response.text();
-
-        let data = {} as T;
-        if (body) {
-          data = JSON.parse(body);
-        }
-
-        return {
-          headers: response.headers,
-          ok: response.ok,
-          redirected: response.redirected,
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type,
-          url: response.url,
-          body: data,
-        };
-      };
-    },
-    [],
-  );
-
-  const fetch = React.useMemo(() => {
-    return returnFetchJson();
-  }, [returnFetchJson]);
 
   return (
     <div>
@@ -67,18 +24,37 @@ import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch"
 type JsonRequestInit = Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object };
 
 // Use as a replacer of \`Response\`
-export type JsonResponse<T extends object | null> = Omit<
+export type ResponseGenericBody<T> = Omit<
   Awaited<ReturnType<typeof fetch>>,
   keyof Body | "clone"
 > & {
   body: T;
 };
 
+export type JsonResponse<T> = T extends object
+  ? ResponseGenericBody<T>
+  : ResponseGenericBody<unknown>;
+
+
+// this resembles the default behavior of axios json parser
+// https://github.com/axios/axios/blob/21a5ad34c4a5956d81d338059ac0dd34a19ed094/lib/defaults/index.js#L25
+const parseJsonSafely = (text: string): object | string => {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    if ((e as Error).name !== "SyntaxError") {
+      throw e;
+    }
+
+    return text.trim();
+  }
+};
+
 // Write your own high order function to serialize request body and deserialize response body.
-const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
+export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T extends object>(
+  return async <T>(
     url: FetchArgs[0],
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
@@ -87,13 +63,7 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       body: init?.body && JSON.stringify(init.body),
     });
 
-    // For not throwing an error when a response body is empty, get response as text and parse to json.
-    const body = await response.text();
-
-    let data = {} as T;
-    if (body) {
-      data = JSON.parse(body);
-    }
+    const body = parseJsonSafely(await response.text()) as T;
 
     return {
       headers: response.headers,
@@ -103,8 +73,8 @@ const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       statusText: response.statusText,
       type: response.type,
       url: response.url,
-      body: data,
-    };
+      body,
+    } as JsonResponse<T>;
   };
 };
 

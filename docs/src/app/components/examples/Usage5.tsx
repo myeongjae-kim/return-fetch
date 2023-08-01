@@ -15,7 +15,7 @@ import LoadingIndicator from "@/app/components/LoadingIndicator";
 import { fetch as whatwgFetch } from "whatwg-fetch";
 import crossFetch from "cross-fetch";
 import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
-import { JsonResponse } from "@/app/domain/model/JsonRespones";
+import { returnFetchJson } from "@/app/domain/application/returnFetchJson";
 
 const Usage5 = (): React.JSX.Element => {
   const [loading, setLoading] = React.useState(false);
@@ -66,42 +66,6 @@ const Usage5 = (): React.JSX.Element => {
           },
         },
       }),
-    [],
-  );
-
-  const returnFetchJson = React.useCallback(
-    (args?: ReturnFetchDefaultOptions) => {
-      const fetch = returnFetch(args);
-
-      return async <T extends object>(
-        url: FetchArgs[0],
-        init?: JsonRequestInit,
-      ): Promise<JsonResponse<T>> => {
-        const response = await fetch(url, {
-          ...init,
-          body: init?.body && JSON.stringify(init.body),
-        });
-
-        // get response as text and parse json for not throwing an error when a response body is empty.
-        const body = await response.text();
-
-        let data = {} as T;
-        if (body) {
-          data = JSON.parse(body);
-        }
-
-        return {
-          headers: response.headers,
-          ok: response.ok,
-          redirected: response.redirected,
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type,
-          url: response.url,
-          body: data,
-        };
-      };
-    },
     [],
   );
 
