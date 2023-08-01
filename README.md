@@ -209,37 +209,61 @@ fetchExtended("/sample/api/400").catch((e) => { alert(e.message); });
 ```ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
 
-export type ApiResponse<T> = {
-  status: number;
-  statusText: string;
-  data: T;
+// Use as a replacer of `RequestInit`
+type JsonRequestInit = Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object };
+
+// Use as a replacer of `Response`
+export type ResponseGenericBody<T> = Omit<
+  Awaited<ReturnType<typeof fetch>>,
+  keyof Body | "clone"
+> & {
+  body: T;
+};
+
+export type JsonResponse<T> = T extends object
+  ? ResponseGenericBody<T>
+  : ResponseGenericBody<unknown>;
+
+
+// this resembles the default behavior of axios json parser
+// https://github.com/axios/axios/blob/21a5ad34c4a5956d81d338059ac0dd34a19ed094/lib/defaults/index.js#L25
+const parseJsonSafely = (text: string): object | string => {
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    if ((e as Error).name !== "SyntaxError") {
+      throw e;
+    }
+
+    return text.trim();
+  }
 };
 
 // Write your own high order function to serialize request body and deserialize response body.
-const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
+export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T extends object>(
+  return async <T>(
     url: FetchArgs[0],
-    init?: Omit<NonNullable<FetchArgs[1]>, "body"> & { body?: object },
-  ) => {
+    init?: JsonRequestInit,
+  ): Promise<JsonResponse<T>> => {
     const response = await fetch(url, {
       ...init,
       body: init?.body && JSON.stringify(init.body),
     });
 
-    // For not throwing an error when a response body is empty, get response as text and parse to json.
-    const body = await response.text();
-
-    let data = {} as T;
-    if (body) {
-      data = JSON.parse(body);
-    }
+    const body = parseJsonSafely(await response.text()) as T;
 
     return {
-      ...response,
-      body: data,
-    };
+      headers: response.headers,
+      ok: response.ok,
+      redirected: response.redirected,
+      status: response.status,
+      statusText: response.statusText,
+      type: response.type,
+      url: response.url,
+      body,
+    } as JsonResponse<T>;
   };
 };
 
@@ -249,6 +273,12 @@ export const fetchExtended = returnFetchJson({
 });
 
 //////////////////// Use it somewhere ////////////////////
+export type ApiResponse<T> = {
+  status: number;
+  statusText: string;
+  data: T;
+};
+
 fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
   method: "POST",
   body: { message: "Hello, world!" }, // body should be an object.
@@ -714,15 +744,13 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   interceptors: {
     response: async (response, requestArgs, fetch) => {
       if (response.status !== 401) {
-        return response;
+         return response;
       }
 
       console.log("not authorized, trying to get refresh cookie..");
-      const responseToRefreshCookie = await fetch(
-        "/200",
-      );
+      const responseToRefreshCookie = await fetch("/200");
       if (responseToRefreshCookie.status !== 200) {
-        throw Error("failed to refresh cookie");
+         throw Error("failed to refresh cookie");
       }
 
       retryCount += 1;
@@ -732,14 +760,16 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   },
 });
 
+const nest = (
+  remaining: number,
+  providedFetch = fetchBaseUrlApplied,
+): ReturnType<ReturnFetch> =>
+  remaining > 0
+    ? nest(remaining - 1, returnFetchRetry({ fetch: providedFetch }))
+    : providedFetch;
+
 // nest 4 times -> 2^4 = 16
-const fetchExtended = returnFetchRetry({
-  fetch: returnFetchRetry({
-    fetch: returnFetchRetry({
-      fetch: returnFetchRetry(),
-    }),
-  }),
-});
+const fetchExtended = nest(4);
 
 fetchExtended("/401")
   .then((it) => it.text())
