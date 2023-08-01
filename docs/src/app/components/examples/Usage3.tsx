@@ -58,7 +58,7 @@ const Usage3 = (): React.JSX.Element => {
   return (
     <div>
       <MarkdownRenderer
-        markdown={`### #3. Serialize request body and deserialize response body.
+        markdown={`### #3. Serialize request body and deserialize response body
 
 \`\`\`ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";

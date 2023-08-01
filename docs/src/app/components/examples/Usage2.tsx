@@ -33,7 +33,7 @@ const Usage2 = (): React.JSX.Element => {
   return (
     <div>
       <MarkdownRenderer
-        markdown={`### #2. Throw an error if a response status is more than or equal to 400.
+        markdown={`### #2. Throw an error if a response status is more than or equal to 400
 
 \`\`\`ts
 import returnFetch, { ReturnFetch } from "return-fetch";

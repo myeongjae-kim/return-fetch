@@ -176,7 +176,7 @@ export const fetchExtended = returnFetchWithLoadingIndicator({
 fetchExtended("/sample/api");
 ```
 
-### #2. Throw an error if a response status is more than or equal to 400.
+### #2. Throw an error if a response status is more than or equal to 400
 
 ```ts
 import returnFetch, { ReturnFetch } from "return-fetch";
@@ -204,7 +204,7 @@ export const fetchExtended = returnFetchThrowingErrorByStatusCode({
 fetchExtended("/sample/api/400").catch((e) => { alert(e.message); });
 ```
 
-### #3. Serialize request body and deserialize response body.
+### #3. Serialize request body and deserialize response body
 
 ```ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
