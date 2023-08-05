@@ -18,6 +18,7 @@ public/css/main.css
 
 # Coverage reports
 coverage
+**/coverage
 
 # Dependency directory
 node_modules
@@ -33,3 +34,4 @@ Thumbs.db
 
 # Ignore built ts files
 dist/**/*
+**/dist/**/*

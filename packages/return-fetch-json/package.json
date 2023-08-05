@@ -1,0 +1,68 @@
+{
+  "name": "return-fetch-json",
+  "type": "module",
+  "version": "0.4.2",
+  "description": "An extended function of return-fetch ot serialize request body and deserialize response body as object.",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "dist/index.d.ts",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "unpkg": "dist/index.umd.js",
+  "files": [
+    "dist/**/*",
+    "package.json"
+  ],
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "clean": "rimraf dist",
+    "bundle": "microbundle --format modern,cjs,umd",
+    "typedoc": "typedoc src/index.ts --out docs/public/docs",
+    "build": "pnpm run clean && pnpm run bundle && sh ../../scripts/generate-cts.sh",
+    "dev": "microbundle watch",
+    "prepublishOnly": "pnpm run test && pnpm run build",
+    "watch": "pnpm run clean && tsc -w",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "prettier": "prettier . --write",
+    "lint": "eslint src/**",
+    "lint-staged": "lint-staged",
+    "check": "tsc --strict --noEmit --extendedDiagnostics"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deer-develop/return-fetch/tree/main/packages/return-fetch-json"
+  },
+  "homepage": "https://return-fetch.myeongjae.kim/json",
+  "keywords": [
+    "fetch",
+    "interceptor",
+    "request",
+    "response",
+    "baseURL",
+    "baseUrl",
+    "default headers",
+    "header",
+    "nextjs"
+  ],
+  "author": "Myeongjae Kim",
+  "license": "MIT",
+  "dependencies": {
+    "return-fetch": "^0.4.2"
+  }
+}

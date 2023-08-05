@@ -130,6 +130,12 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6
 
+  packages/return-fetch-json:
+    dependencies:
+      return-fetch:
+        specifier: ^0.4.2
+        version: link:../..
+
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:

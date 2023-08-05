@@ -41,6 +41,8 @@ In implementing the \`fetch\` interceptors, I considered the following points:
 
 ## Installation
 
+### Package Manager
+
 Via npm
 
 \`\`\`bash
@@ -57,6 +59,29 @@ Via pnpm
 
 \`\`\`bash
 pnpm add return-fetch
+\`\`\`
+
+### \\<script\\> tag
+
+\`\`\`html
+<!--
+  Pick your favourite CDN:
+    - https://unpkg.com/return-fetch
+    - https://cdn.jsdelivr.net/npm/return-fetch
+    - https://www.skypack.dev/view/return-fetch
+    - https://cdnjs.com/libraries/return-fetch
+    - …
+-->
+
+<!-- UMD import as window.returnFetch -->
+<script src="https://unpkg.com/return-fetch"></script>
+
+<!-- Modern import -->
+<script type="module">
+  import returnFetch from 'https://cdn.skypack.dev/return-fetch/dist/index.js'
+
+  // ... //
+</script>
 \`\`\`
 
 ## Demo

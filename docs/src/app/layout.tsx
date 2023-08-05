@@ -16,6 +16,18 @@ const description = "baseURL, default headers, interceptors.";
 export const metadata: Metadata = {
   title,
   description,
+  keywords: [
+    "fetch",
+    "interceptor",
+    "fetch-intercept",
+    "request",
+    "response",
+    "baseURL",
+    "baseUrl",
+    "default headers",
+    "header",
+    "nextjs",
+  ],
   icons: {
     icon: [
       {
