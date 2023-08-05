@@ -250,7 +250,7 @@ export type ResponseGenericBody<T> = Omit<
 
 export type JsonResponse<T> = T extends object
   ? ResponseGenericBody<T>
-  : ResponseGenericBody<unknown>;
+  : ResponseGenericBody<string>;
 
 
 // this resembles the default behavior of axios json parser
