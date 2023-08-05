@@ -58,7 +58,8 @@
     "baseURL",
     "baseUrl",
     "default headers",
-    "header"
+    "header",
+    "nextjs"
   ],
   "author": "Myeongjae Kim",
   "license": "MIT",

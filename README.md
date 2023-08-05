@@ -94,16 +94,19 @@ reason why I decided to implement it myself.
 
 In implementing the `fetch` interceptors, I considered the following points:
 
-1. Setting library boundaries. I decided to only implement the following additional functions and not others:
+1. **Minimalistic.** I decided to only implement the following additional functions and not others:
    1. Implementing request and response interceptors
    2. Specifying a baseUrl
    3. Setting a default header
 2. **No peer dependencies**. I decided not to use any other libraries. This is because I would like to keep the library
    as light as possible, and running any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
    Native, Web Workers).
-3. It should be easy to add interceptors.
+3. It should be **easy to add interceptors** because `return-fetch` will provide minimal functionality. Users should be
+   able to extend fetch as they wish.
 4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
+5. **Liskov Substitution Principle (LSP)** should be maintained. The `fetch` function should be able to be used as a
+   `fetch` function without any problems.
 
 ### Good Things
 
