@@ -17,6 +17,8 @@ const Usage3 = (): React.JSX.Element => {
       <MarkdownRenderer
         markdown={`### #3. Serialize request body and deserialize response body
 
+You can import below example code because it is published as a separated npm [return-fetch-json](https://www.npmjs.com/package/return-fetch-json)
+
 \`\`\`ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
 

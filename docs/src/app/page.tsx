@@ -35,6 +35,15 @@ export default function Home() {
           <Usage6 />
           <Usage7 />
           <Usage8 />
+          <div>
+            <MarkdownRenderer
+              markdown={`## Derived Packages
+
+- [return-fetch-json](https://www.npmjs.com/package/return-fetch-json): A package that serialize request body object
+and deserialize response body as a JSON object.
+`}
+            />
+          </div>
           <div className={"mb-24"}>
             <h2 id={"license"}>License</h2>
             MIT ©{" "}

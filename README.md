@@ -234,6 +234,9 @@ fetchExtended("/sample/api/400").catch((e) => { alert(e.message); });
 
 ### #3. Serialize request body and deserialize response body
 
+You can import below example code because it is published as a separated npm package:
+[return-fetch-json](https://www.npmjs.com/package/return-fetch-json)
+
 ```ts
 import returnFetch, { FetchArgs, ReturnFetchDefaultOptions } from "return-fetch";
 
@@ -805,6 +808,11 @@ fetchExtended("/401")
   .then(console.log)
   .then(() => console.log("\n Total counts of request: " + (retryCount + 1)))
 ```
+
+## Derived Packages
+
+- [return-fetch-json](https://www.npmjs.com/package/return-fetch-json): A package that serialize request body object
+and deserialize response body as a JSON object.
 
 ## License
 
