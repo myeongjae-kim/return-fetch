@@ -1,7 +1,7 @@
 {
   "name": "return-fetch",
   "type": "module",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "A very light and simple library to extend fetch by implementing request, response interceptors.",
   "source": "src/index.ts",
   "exports": {
