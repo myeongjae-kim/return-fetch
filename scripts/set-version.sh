@@ -12,6 +12,6 @@ rm package.json && mv package.json.tmp package.json
 files=$(find packages -type f -name "package.json");
 
 for file in $files; do
-  cat "$file" | jq ".version = \"$VERSION\"" > "$file.tmp"
+  cat "$file" | jq ".version = \"$VERSION\"" | jq ".dependencies.\"return-fetch\" = \"^$VERSION\"" > "$file.tmp"
   rm "$file" && mv "$file.tmp" "$file"
 done
