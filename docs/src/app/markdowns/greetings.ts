@@ -69,7 +69,6 @@ pnpm add return-fetch
     - https://unpkg.com/return-fetch
     - https://cdn.jsdelivr.net/npm/return-fetch
     - https://www.skypack.dev/view/return-fetch
-    - https://cdnjs.com/libraries/return-fetch
     - …
 -->
 

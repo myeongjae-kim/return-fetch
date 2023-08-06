@@ -76,7 +76,6 @@ pnpm add return-fetch-json
     - https://unpkg.com/return-fetch-json
     - https://cdn.jsdelivr.net/npm/return-fetch-json
     - https://www.skypack.dev/view/return-fetch-json
-    - https://cdnjs.com/libraries/return-fetch-json
     - …
 -->
 
