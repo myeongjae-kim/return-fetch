@@ -11,12 +11,14 @@ const inter = Inter({ subsets: ["latin"] });
 
 const title =
   "⛓️return-fetch :: A simple and powerful high order function to extend fetch";
-const description = "baseURL, default headers, interceptors.";
+const description =
+  "The modern fetch interceptor for browser and Node.js, especially for Next.js.";
 
 export const metadata: Metadata = {
   title,
   description,
   keywords: [
+    "fetch intercept",
     "fetch",
     "interceptor",
     "fetch-intercept",
