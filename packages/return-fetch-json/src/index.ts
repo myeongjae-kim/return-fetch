@@ -3,6 +3,8 @@ import returnFetch, {
   ReturnFetchDefaultOptions,
 } from "return-fetch";
 
+export type ReturnFetchJson = typeof returnFetchJson;
+
 export type ReturnFetchJsonDefaultOptions = ReturnFetchDefaultOptions & {
   jsonParser?: typeof JSON.parse;
 };

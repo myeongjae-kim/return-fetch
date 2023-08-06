@@ -133,7 +133,7 @@ importers:
   packages/return-fetch-json:
     dependencies:
       return-fetch:
-        specifier: ^0.4.4
+        specifier: ^0.4.5
         version: link:../..
 
 packages:
