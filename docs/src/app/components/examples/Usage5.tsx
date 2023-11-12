@@ -126,10 +126,7 @@ Next.js has already included 'node-fetch' and
 [they extend it for server-side things like caching](https://nextjs.org/docs/app/api-reference/functions/fetch).
 
 Whatever a \`fetch\` you use, you can use \`return-fetch\` as long as the \`fetch\` you use is compatible with the
-[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). <span class="opacity-60 text-[0.8em]">(It is
-\`string | URL\` which is a type of first argument of \`fetch\` created by \`return-fetch\`. It does not support
-\`Request\` object as a first argument of a customized \`fetch\` yet. If you need to use \`Request\` object, please
-wait or [contribute💙](https://github.com/deer-develop/return-fetch/issues/1))</span>
+[Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).
 
 #### #5-1. \`node-fetch\`
 

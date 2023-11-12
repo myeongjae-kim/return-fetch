@@ -25,7 +25,7 @@ In implementing the \`fetch\` interceptors, I considered the following points:
    able to extend fetch as they wish.
 4. Codes to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
-5. **Liskov Substitution Principle (LSP)** should be maintained. The \`fetch\` function created by \`return-fetch \`
+5. **Liskov Substitution Principle (LSP)** should be maintained. The \`fetch\` function created by \`return-fetch\`
    should be able to replace the standard \`fetch\` function anywhere without any problems.
 
 ### Good Things
