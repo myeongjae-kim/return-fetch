@@ -34,28 +34,28 @@ interceptors. <br/>
 import returnFetch from "return-fetch";
 
 const fetchExtended = returnFetch({
-   baseUrl: "https://jsonplaceholder.typicode.com",
-   headers: { Accept: "application/json" },
-   interceptors: {
-      request: async (args) => {
-         console.log("********* before sending request *********");
-         console.log("url:", args[0].toString());
-         console.log("requestInit:", args[1], "\n\n");
-         return args;
-      },
+  baseUrl: "https://jsonplaceholder.typicode.com",
+  headers: {Accept: "application/json"},
+  interceptors: {
+    request: async (args) => {
+      console.log("********* before sending request *********");
+      console.log("url:", args[0].toString());
+      console.log("requestInit:", args[1], "\n\n");
+      return args;
+    },
 
-      response: async (requestArgs, response) => {
-         console.log("********* after receiving response *********");
-         console.log("url:", requestArgs[0].toString());
-         console.log("requestInit:", requestArgs[1], "\n\n");
-         return response;
-      },
-   },
+    response: async (requestArgs, response) => {
+      console.log("********* after receiving response *********");
+      console.log("url:", requestArgs[0].toString());
+      console.log("requestInit:", requestArgs[1], "\n\n");
+      return response;
+    },
+  },
 });
 
-fetchExtended("/todos/1", { method: "GET" })
-        .then((it) => it.text())
-        .then(console.log);
+fetchExtended("/todos/1", {method: "GET"})
+  .then((it) => it.text())
+  .then(console.log);
 ```
 
 **Output**
@@ -82,12 +82,12 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 ## Background
 
 The [Next.js framework](https://nextjs.org/)(which I love so much) [v13 App Router](https://nextjs.org/docs/app) uses
-[its own `fetch` that extends `node-fetch`](https://nextjs.org/docs/app/api-reference/functions/fetch) to do
-server side things like caching. I was accustomed to using [Axios](https://github.com/axios/axios) for API calls, but
+[its own `fetch` implementation that extends `node-fetch`](https://nextjs.org/docs/app/api-reference/functions/fetch) to
+do server side things like caching. I was accustomed to using [Axios](https://github.com/axios/axios) for API calls, but
 I have felt that now is the time to replace Axios with `fetch` finally. The most disappointing aspect I found when
 trying to replace Axios with `fetch` was that `fetch` does not have any interceptors. I thought surely someone
 must have implemented it, so I searched for libraries. However, there was no library capable of handling various
-situations, only one that could add a single request and response interceptors to the global `fetch`. This is the
+situations, only one that could add a single request and response interceptors to the global `fetch`. That is the
 reason why I decided to implement it myself.
 
 ### Philosophy
@@ -95,18 +95,18 @@ reason why I decided to implement it myself.
 In implementing the `fetch` interceptors, I considered the following points:
 
 1. **Minimalistic.** I decided to only implement the following additional functions and not others:
-   1. Implementing request and response interceptors
-   2. Specifying a baseUrl
-   3. Setting a default header
-2. **No peer dependencies**. I decided not to use any other libraries. This is because I would like to keep the library
-   as light as possible, and running any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
+    1. Implementing request and response interceptors
+    2. Specifying a baseUrl
+    3. Setting a default header
+2. **No peer dependencies**. I decided not to use any other libraries. I would like to keep the library
+   as light as possible and running on any execution environments which have `fetch` (e.g. Node.js, Web Browsers, React
    Native, Web Workers).
 3. It should be **easy to add interceptors** because `return-fetch` will provide minimal functionality. Users should be
    able to extend fetch as they wish.
-4. The code to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
+4. Codes to add interceptors should be reusable and able to maintain the **Single Responsibility Principle (SRP)**,
    and it should be possible to combine interceptors that adhere to the SRP.
-5. **Liskov Substitution Principle (LSP)** should be maintained. The `fetch` function should be able to be used as a
-   `fetch` function without any problems.
+5. **Liskov Substitution Principle (LSP)** should be maintained. The `fetch` function created by `return-fetch` should
+   be able to replace the standard `fetch` function anywhere without any problems.
 
 ### Good Things
 
@@ -157,9 +157,9 @@ pnpm add return-fetch
 
 <!-- Modern import -->
 <script type="module">
-  import returnFetch from 'https://cdn.skypack.dev/return-fetch/dist/index.js'
+    import returnFetch from 'https://cdn.skypack.dev/return-fetch/dist/index.js'
 
-  // ... //
+    // ... //
 </script>
 ```
 
@@ -228,7 +228,7 @@ export const fetchExtended = returnFetchThrowingErrorByStatusCode({
 });
 
 //////////////////// Use it somewhere ////////////////////
-fetchExtended("/sample/api/400").catch((e) => { alert(e.message); });
+fetchExtended("/sample/api/400").catch((e) => alert(e.message));
 ```
 
 ### #3. Serialize request body and deserialize response body
@@ -311,7 +311,7 @@ export type ApiResponse<T> = {
 
 fetchExtended<ApiResponse<{ message: string }>>("/sample/api/echo", {
   method: "POST",
-  body: { message: "Hello, world!" }, // body should be an object.
+  body: {message: "Hello, world!"}, // body should be an object.
 }).then(it => it.body);
 ```
 
@@ -345,8 +345,8 @@ export const fetchExtended = returnFetchJson({
 //////////////////// Use it somewhere ////////////////////
 fetchExtended("/sample/api/echo", {
   method: "POST",
-  body: { message: "this is an object of `ApiResponse['data']`" }, // body should be an object.
-}).catch((e) => { alert(e.message); });
+  body: {message: "this is an object of `ApiResponse['data']`"}, // body should be an object.
+}).catch((e) => alert(e.message));
 ```
 
 ### #5. Use any `fetch` implementation
@@ -382,7 +382,7 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificat
 const pathPrefix = "/sample/api/proxy/postman-echo/node-fetch";
 
 export async function GET(request: NextRequest) {
-  const { nextUrl, method, headers } = request;
+  const {nextUrl, method, headers} = request;
 
   const fetch = returnFetch({
     // Use node-fetch instead of global fetch
@@ -478,7 +478,7 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificat
 const pathPrefix = "/sample/api/proxy/postman-echo/cross-fetch";
 
 export async function GET(request: NextRequest) {
-  const { nextUrl, method, headers } = request;
+  const {nextUrl, method, headers} = request;
 
   const fetch = returnFetch({
     fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
@@ -542,7 +542,7 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificat
 const pathPrefix = "/sample/api/proxy/postman-echo/nextjs-fetch";
 
 export async function GET(request: NextRequest) {
-  const { nextUrl, method, headers } = request;
+  const {nextUrl, method, headers} = request;
 
   const fetch = returnFetch({
     // omit fetch option to use Next.js built-in fetch
@@ -618,8 +618,8 @@ window.fetch = fetchExtended;
 //////////////////// Use it somewhere ////////////////////
 fetch("/sample/api/echo", {
   method: "POST",
-  body: JSON.stringify({ message: "Hello, world!" })
-}).catch((e) => { alert(e.message); });
+  body: JSON.stringify({message: "Hello, world!"})
+}).catch((e) => alert(e.message));
 ```
 
 ### #7. Use `URL` or `Request` object as a first argument of `fetch`
@@ -658,14 +658,14 @@ fetchExtended(
   */
   new Request(new URL("https://return-fetch.myeongjae.kim/sample/api/proxy/postman-echo/nextjs-fetch/post"), {
     method: "PUT",
-    body: JSON.stringify({ message: "overwritten by requestInit" }),
+    body: JSON.stringify({message: "overwritten by requestInit"}),
     headers: {
       "X-My-Headers-In-Request-Object": "Works well!",
     },
   }),
   {
     method: "POST",
-    body: JSON.stringify({ message: "Hello, world!" }),
+    body: JSON.stringify({message: "Hello, world!"}),
   },
 )
   .then((it) => it.json())
@@ -700,14 +700,14 @@ fetchExtended(
   */
   new Request("/sample/api/proxy/postman-echo/node-fetch/post", {
     method: "PUT",
-    body: JSON.stringify({ message: "overwritten by requestInit" }),
+    body: JSON.stringify({message: "overwritten by requestInit"}),
     headers: {
       "X-My-Headers-In-Request-Object": "Works well!",
     },
   }),
   {
     method: "POST",
-    body: JSON.stringify({ message: "Hello, world!" }),
+    body: JSON.stringify({message: "Hello, world!"}),
   },
 )
   .then((it) => it.json())
@@ -765,7 +765,7 @@ request 16 times (I know it is too much, but isn't it fun?).
 let retryCount = 0;
 
 // create a fetch function with baseUrl applied
-const fetchBaseUrlApplied = returnFetch({ baseUrl: "https://httpstat.us" });
+const fetchBaseUrlApplied = returnFetch({baseUrl: "https://httpstat.us"});
 
 const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   ...args,
@@ -774,13 +774,13 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   interceptors: {
     response: async (response, requestArgs, fetch) => {
       if (response.status !== 401) {
-         return response;
+        return response;
       }
 
       console.log("not authorized, trying to get refresh cookie..");
       const responseToRefreshCookie = await fetch("/200");
       if (responseToRefreshCookie.status !== 200) {
-         throw Error("failed to refresh cookie");
+        throw Error("failed to refresh cookie");
       }
 
       retryCount += 1;
@@ -795,7 +795,7 @@ const nest = (
   providedFetch = fetchBaseUrlApplied,
 ): ReturnType<ReturnFetch> =>
   remaining > 0
-    ? nest(remaining - 1, returnFetchRetry({ fetch: providedFetch }))
+    ? nest(remaining - 1, returnFetchRetry({fetch: providedFetch}))
     : providedFetch;
 
 // nest 4 times -> 2^4 = 16
@@ -811,7 +811,7 @@ fetchExtended("/401")
 ## Derived Packages
 
 - [return-fetch-json](https://www.npmjs.com/package/return-fetch-json): A package that serialize request body object
-and deserialize response body as a JSON object.
+  and deserialize response body as a JSON object.
 
 ## License
 
