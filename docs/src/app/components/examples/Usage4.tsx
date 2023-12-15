@@ -86,7 +86,7 @@ import {
 /*
   Compose high order functions to create your awesome fetch.
    1. Add loading indicator.
-   2. Throw an error when a response's status code is 400 or more.
+   2. Throw an error when a response's status code is equal to 400 or greater.
    3. Serialize request body and deserialize response body as json and return it.
 */
 export const fetchExtended = returnFetchJson({
@@ -126,7 +126,7 @@ fetchExtended("/sample/api/echo", {
             variant={"purple"}
             onClick={() => {
               setOutput(
-                "You have seen a loading indicator. The status code is 400 so an alert occurs.",
+                "You have seen a loading indicator. The status code is equal to 400 so an alert occurs.",
               );
               fetch<{ message: string }>("/sample/api/400?delay=200").catch(
                 (e) => {

@@ -203,12 +203,12 @@ export const fetchExtended = returnFetchWithLoadingIndicator({
 fetchExtended("/sample/api");
 ```
 
-### #2. Throw an error if a response status is more than or equal to 400
+### #2. Throw an error if a response status is greater than or equal to 400
 
 ```ts
 import returnFetch, { ReturnFetch } from "return-fetch";
 
-// Write your own high order function to throw an error if a response status is more than or equal to 400.
+// Write your own high order function to throw an error if a response status is greater than or equal to 400.
 const returnFetchThrowingErrorByStatusCode: ReturnFetch = (args) => returnFetch({
   ...args,
   interceptors: {
@@ -331,7 +331,7 @@ import {
 /*
   Compose high order functions to create your awesome fetch.
    1. Add loading indicator.
-   2. Throw an error when a response's status code is 400 or more.
+   2. Throw an error when a response's status code is equal to 400 or greater.
    3. Serialize request body and deserialize response body as json and return it.
 */
 export const fetchExtended = returnFetchJson({
