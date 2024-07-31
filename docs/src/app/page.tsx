@@ -14,7 +14,7 @@ import Usage8 from "@/app/components/examples/Usage8";
 
 export default function Home() {
   return (
-    <main>
+    <main className="2xl:pl-80">
       <HeroSection />
       <div className={"mx-4 flex justify-center"}>
         <div className={"w-full max-w-3xl xl:max-w-4xl"}>
