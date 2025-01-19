@@ -52,8 +52,10 @@ const returnFetchJson = (args?: ReturnFetchJsonDefaultOptions) => {
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
     const headers = new Headers(init?.headers);
-    headers.get("Content-Type") ||
-      headers.set("Content-Type", "application/json");
+    if (init?.method && init.method.toUpperCase() !== "GET") {
+      headers.get("Content-Type") ||
+        headers.set("Content-Type", "application/json");
+    }
     headers.get("Accept") || headers.set("Accept", "application/json");
 
     const response = await fetch(url, {

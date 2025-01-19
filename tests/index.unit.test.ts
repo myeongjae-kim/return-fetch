@@ -152,10 +152,10 @@ describe("returnFetch", () => {
     });
 
     const responseBody = await response.body
-      .getReader()
+      ?.getReader()
       .read()
       .then((stream) => stream.value)
-      .then(Buffer.from)
+      .then((it) => Buffer.from(it as Uint8Array))
       .then((it) => it.toString("utf-8"));
     expect(responseBody).toBe("force-set-body");
   });

@@ -1,7 +1,7 @@
 {
   "name": "return-fetch-json",
   "type": "module",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "An extended function of return-fetch ot serialize request body and deserialize response body as object.",
   "source": "src/index.ts",
   "exports": {
@@ -63,6 +63,6 @@
   "author": "Myeongjae Kim",
   "license": "MIT",
   "dependencies": {
-    "return-fetch": "^0.4.6"
+    "return-fetch": "^0.4.7"
   }
 }

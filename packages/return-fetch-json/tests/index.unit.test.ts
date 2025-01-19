@@ -92,12 +92,65 @@ describe("returnFetch", () => {
 
     // then
     expect(fetchMocked.mock.calls[0][1].headers).toBeInstanceOf(Headers);
-    // Content-Type and Accept are set by default when not provided
     expect(fetchMocked.mock.calls[0][1].headers.get("Content-Type")).toBe(
       "application/json; charset=utf-8",
     );
     expect(fetchMocked.mock.calls[0][1].headers.get("Accept")).toBe(
       "application/json; charset=utf-8",
+    );
+  });
+
+  it("should not provide default Content-Type header when method is undefined", async () => {
+    // given
+    const responseBody = { id: 1 };
+    const response = new Response(JSON.stringify(responseBody), {
+      status: 200,
+      statusText: "OK",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=utf-8",
+      }),
+    });
+    fetchMocked.mockResolvedValue(response);
+    const fetchExtended = returnFetchJson({
+      baseUrl: "https://base-url.com",
+    });
+
+    // when
+    const actual = await fetchExtended<{ id: number }>("/get");
+
+    // then
+    expect(fetchMocked.mock.calls[0][1].headers).toBeInstanceOf(Headers);
+    expect(fetchMocked.mock.calls[0][1].headers.get("Content-Type")).toBe(null);
+    expect(fetchMocked.mock.calls[0][1].headers.get("Accept")).toBe(
+      "application/json",
+    );
+  });
+
+  it("should not provide default Content-Type header when method is GET", async () => {
+    // given
+    const responseBody = { id: 1 };
+    const response = new Response(JSON.stringify(responseBody), {
+      status: 200,
+      statusText: "OK",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=utf-8",
+      }),
+    });
+    fetchMocked.mockResolvedValue(response);
+    const fetchExtended = returnFetchJson({
+      baseUrl: "https://base-url.com",
+    });
+
+    // when
+    const actual = await fetchExtended<{ id: number }>("/get", {
+      method: "GET",
+    });
+
+    // then
+    expect(fetchMocked.mock.calls[0][1].headers).toBeInstanceOf(Headers);
+    expect(fetchMocked.mock.calls[0][1].headers.get("Content-Type")).toBe(null);
+    expect(fetchMocked.mock.calls[0][1].headers.get("Accept")).toBe(
+      "application/json",
     );
   });
 
