@@ -41,7 +41,7 @@ const Usage1 = (): React.JSX.Element => {
       <MarkdownRenderer
         markdown={`## Usage
 
-You can find [the source code of below examples here](https://github.com/deer-develop/return-fetch/tree/main/docs/src/app/components/examples).
+You can find [the source code of below examples here](https://github.com/myeongjae-kim/return-fetch/tree/main/docs/src/app/components/examples).
 
 ### #1. Display/Hide loading indicator
 

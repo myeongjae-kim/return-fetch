@@ -8,13 +8,13 @@ type Badge = {
 
 const badges: Badge[] = [
   {
-    href: "https://github.com/deer-develop/return-fetch/actions?query=workflow%3ACI",
-    src: "https://github.com/deer-develop/return-fetch/workflows/CI/badge.svg",
+    href: "https://github.com/myeongjae-kim/return-fetch/actions?query=workflow%3ACI",
+    src: "https://github.com/myeongjae-kim/return-fetch/workflows/CI/badge.svg",
     alt: "CI",
   },
   {
-    href: "https://codecov.io/gh/deer-develop/return-fetch",
-    src: "https://img.shields.io/codecov/c/github/deer-develop/return-fetch.svg",
+    href: "https://codecov.io/gh/myeongjae-kim/return-fetch",
+    src: "https://img.shields.io/codecov/c/github/myeongjae-kim/return-fetch.svg",
     alt: "Test Coverage",
   },
   {
@@ -28,7 +28,7 @@ const badges: Badge[] = [
     alt: "Bundle Size",
   },
   {
-    href: "https://raw.githubusercontent.com/deer-develop/return-fetch/main/LICENSE",
+    href: "https://raw.githubusercontent.com/myeongjae-kim/return-fetch/main/LICENSE",
     src: "https://img.shields.io/npm/l/return-fetch.svg",
     alt: "MIT license",
   },

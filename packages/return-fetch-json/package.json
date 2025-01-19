@@ -46,7 +46,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/deer-develop/return-fetch/tree/main/packages/return-fetch-json"
+    "url": "https://github.com/myeongjae-kim/return-fetch/tree/main/packages/return-fetch-json"
   },
   "homepage": "https://return-fetch.myeongjae.kim/json",
   "keywords": [

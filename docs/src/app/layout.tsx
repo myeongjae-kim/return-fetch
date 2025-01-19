@@ -82,7 +82,7 @@ export default function RootLayout({
           <IconLinkButton
             className={"text-black hover:text-black"}
             aria-label="Open on GitHub"
-            href="https://github.com/deer-develop/return-fetch"
+            href="https://github.com/myeongjae-kim/return-fetch"
           >
             <GithubIcon />
           </IconLinkButton>
