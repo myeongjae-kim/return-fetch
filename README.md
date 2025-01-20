@@ -82,19 +82,19 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 ## Products using `return-fetch`
 
 <div class="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-   <a href="https://labor.maum.ai/" about="_blank">
+   <a href="https://labor.maum.ai/">
       <img src="./imgs/logo-labor.png" width="132" />
    </a>
-   <a href="https://apps.apple.com/kr/app/%EB%94%94%EC%96%B4-deer/id1455718957" about="_blank">
+   <a href="https://apps.apple.com/kr/app/%EB%94%94%EC%96%B4-deer/id1455718957">
       <img src="./imgs/logo-deer.png" width="48" />
    </a>
-   <a href="https://rnkakao.dev/" about="_blank">
+   <a href="https://rnkakao.dev/">
       <img src="./imgs/logo-rnkakao.png" width="200" />
    </a>
-   <a href="https://app.whochooz.com" about="_blank">
+   <a href="https://app.whochooz.com">
       <img src="./imgs/logo-whochooz.webp" width="150" />
    </a>
-   <a href="https://www.aesk.co.kr" about="_blank">
+   <a href="https://www.aesk.co.kr">
       <img src="./imgs/logo-aesk.webp" width="130" />
    </a>
 </div>
