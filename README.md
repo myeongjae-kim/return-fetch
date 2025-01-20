@@ -83,7 +83,7 @@ requestInit: { method: 'GET', headers: { Accept: 'application/json' } }
 
 <div class="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
    <a href="https://labor.maum.ai/">
-      <img src="./imgs/logo-labor.png" width="132" />
+      <img src="./imgs/logo-labor-ministry.png" width="132" />
    </a>
    <a href="https://apps.apple.com/kr/app/%EB%94%94%EC%96%B4-deer/id1455718957">
       <img src="./imgs/logo-deer.png" width="48" />
