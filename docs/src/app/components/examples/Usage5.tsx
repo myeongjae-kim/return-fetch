@@ -3,18 +3,13 @@
 import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
-import returnFetch, {
-  FetchArgs,
-  ReturnFetch,
-  ReturnFetchDefaultOptions,
-} from "return-fetch";
+import returnFetch, { ReturnFetch } from "return-fetch";
 import { strings } from "@/app/common/strings";
 import LoadingIndicator from "@/app/components/LoadingIndicator";
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import { fetch as whatwgFetch } from "whatwg-fetch";
 import crossFetch from "cross-fetch";
-import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
 import { returnFetchJson } from "@/app/domain/application/returnFetchJson";
 
 const Usage5 = (): React.JSX.Element => {
@@ -76,7 +71,6 @@ const Usage5 = (): React.JSX.Element => {
       }),
     });
   }, [
-    returnFetchJson,
     returnFetchThrowingErrorByStatusCode,
     returnFetchWithLoadingIndicator,
   ]);
@@ -90,7 +84,6 @@ const Usage5 = (): React.JSX.Element => {
       }),
     });
   }, [
-    returnFetchJson,
     returnFetchThrowingErrorByStatusCode,
     returnFetchWithLoadingIndicator,
   ]);
@@ -104,7 +97,6 @@ const Usage5 = (): React.JSX.Element => {
       }),
     });
   }, [
-    returnFetchJson,
     returnFetchThrowingErrorByStatusCode,
     returnFetchWithLoadingIndicator,
   ]);

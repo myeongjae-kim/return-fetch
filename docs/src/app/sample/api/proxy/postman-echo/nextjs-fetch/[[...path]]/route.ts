@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     method,
     headers,
     body: request.body,
-    // @ts-ignore
+    // @ts-expect-error -- duplex is supported by Node.js fetch but missing from RequestInit.
     duplex: "half",
   });
 

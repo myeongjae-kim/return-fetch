@@ -4,6 +4,7 @@ packages:
 allowBuilds:
   esbuild: false
   inversify-typesafe: false
+  sharp: false
   unrs-resolver: false
 minimumReleaseAgeExclude:
   - inversify-typesafe@0.5.7

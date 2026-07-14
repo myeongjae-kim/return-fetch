@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/refs -- retry refs are read by deferred interceptors, not during render */
+
 import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
@@ -61,7 +63,7 @@ const Usage8 = (): React.JSX.Element => {
         : providedFetch;
 
     return nest(4);
-  }, [returnFetchRetry]);
+  }, [fetchBaseUrlApplied, returnFetchRetry]);
 
   return (
     <div>

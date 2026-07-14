@@ -3,14 +3,9 @@
 import React from "react";
 import MarkdownRenderer from "@/app/components/MarkdownRenderer";
 import Button from "@/app/components/Button";
-import returnFetch, {
-  FetchArgs,
-  ReturnFetch,
-  ReturnFetchDefaultOptions,
-} from "return-fetch";
+import returnFetch, { ReturnFetch } from "return-fetch";
 import { strings } from "@/app/common/strings";
 import LoadingIndicator from "@/app/components/LoadingIndicator";
-import { JsonRequestInit } from "@/app/domain/model/JsonRequestInit";
 import { returnFetchJson } from "@/app/domain/application/returnFetchJson";
 
 const Usage4 = (): React.JSX.Element => {
@@ -61,7 +56,6 @@ const Usage4 = (): React.JSX.Element => {
       }),
     });
   }, [
-    returnFetchJson,
     returnFetchThrowingErrorByStatusCode,
     returnFetchWithLoadingIndicator,
   ]);

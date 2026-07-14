@@ -1,6 +1,6 @@
 import React from "react";
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import IconLinkButton from "@/app/components/IconLinkButton";
 import GithubIcon from "@/app/components/GithubIcon";
@@ -15,6 +15,7 @@ const description =
   "The modern fetch interceptor for browser and Node.js, especially for Next.js.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://return-fetch.myeongjae.kim"),
   title,
   description,
   keywords: [
@@ -48,7 +49,6 @@ export const metadata: Metadata = {
       url: "/apple-touch-icon.png",
     },
   },
-  themeColor: "#ffffff",
   manifest: "/site.webmanifest",
   openGraph: {
     title,
@@ -63,13 +63,21 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={"scroll-smooth"}>
+    <html
+      lang="en"
+      className={"scroll-smooth"}
+      data-scroll-behavior="smooth"
+    >
       <body className={inter.className}>
         <header className={"flex justify-end p-2"}>
           <IconLinkButton
