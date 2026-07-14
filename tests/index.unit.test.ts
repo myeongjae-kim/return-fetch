@@ -206,7 +206,7 @@ describe("returnFetch", () => {
       method: "POST",
       headers: new Headers({ "Content-Type": "application/json" }),
       body: JSON.stringify({ hello: "world!" }),
-      referrer: "about:client",
+      referrer: "https://base-url.com/source",
       referrerPolicy: "origin",
       mode: "cors",
       credentials: "same-origin",

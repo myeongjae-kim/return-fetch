@@ -111,7 +111,17 @@ const mergeRequestObjectWithRequestInit = async (
   request: Request,
   requestInit?: RequestInit,
 ): Promise<RequestInit> => {
-  const mergedRequest = new Request(request, requestInit);
+  const hasRequestInit =
+    requestInit !== undefined && Object.keys(requestInit).length > 0;
+  const mergedRequest = new Request(
+    request,
+    hasRequestInit
+      ? requestInit
+      : {
+          referrer: request.referrer,
+          referrerPolicy: request.referrerPolicy,
+        },
+  );
 
   const body = await mergedRequest.arrayBuffer();
 
