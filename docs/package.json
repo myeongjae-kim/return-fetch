@@ -2,7 +2,6 @@
   "name": "return-fetch-docs",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.13.0",
   "scripts": {
     "setup": "pnpm -w bundle && pnpm -w typedoc",
     "dev": "next dev",
