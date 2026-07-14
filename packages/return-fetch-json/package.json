@@ -62,13 +62,7 @@
   ],
   "author": "Myeongjae Kim",
   "license": "MIT",
-  "devDependencies": {
-    "return-fetch": "workspace:*"
-  },
-  "peerDependencies": {
-    "return-fetch": "^0.4.8"
-  },
   "dependencies": {
-    "return-fetch": "^0.4.8"
+    "return-fetch": "workspace:^"
   }
 }
