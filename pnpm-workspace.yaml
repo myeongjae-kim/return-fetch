@@ -1,5 +1,8 @@
 packages:
   - docs
   - packages/*
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
 overrides:
   rollup-plugin-typescript2: 0.37.0
