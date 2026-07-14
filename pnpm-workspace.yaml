@@ -1,3 +1,5 @@
 packages:
   - docs
   - packages/*
+overrides:
+  rollup-plugin-typescript2: 0.37.0
