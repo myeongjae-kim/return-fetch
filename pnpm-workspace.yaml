@@ -3,6 +3,9 @@ packages:
   - packages/*
 allowBuilds:
   esbuild: false
+  inversify-typesafe: false
   unrs-resolver: false
+minimumReleaseAgeExclude:
+  - inversify-typesafe@0.5.7
 overrides:
   rollup-plugin-typescript2: 0.37.0

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   const { nextUrl, method, headers } = request;
 
   const fetch = returnFetch({
-    fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
+    fetch: nodeFetch as unknown as ReturnFetchDefaultOptions["fetch"],
     baseUrl: "https://postman-echo.com",
   });
 

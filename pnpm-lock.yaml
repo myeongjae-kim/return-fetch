@@ -134,7 +134,7 @@ importers:
         version: 5.9.3
 
   packages/return-fetch-json:
-    dependencies:
+    devDependencies:
       return-fetch:
         specifier: workspace:^
         version: link:../..
