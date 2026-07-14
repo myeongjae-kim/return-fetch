@@ -7,35 +7,44 @@ import { toast, Toaster } from "react-hot-toast";
 
 const ClientDependencyContainer = (): React.JSX.Element => {
   React.useEffect(() => {
-    document.querySelectorAll("h2, h3, h4, h5, h6").forEach((block) => {
-      block.innerHTML = `${block.innerHTML} <a class="${constants.HEADING_URL_COPY_LINK_CLASS}" href="#${block.id}" onClick="navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#${block.id}')">
-  <span class="material-icons cursor-pointer select-none" style="font-size: 1.2em">
-    link
-  </span>
-</a>
-`;
-    });
-  }, []);
+    const cleanups: Array<() => void> = [];
 
-  React.useEffect(() => {
-    if (!document) {
-      return;
-    }
+    document.querySelectorAll("h2, h3, h4, h5, h6").forEach((heading) => {
+      heading
+        .querySelectorAll(`a.${constants.HEADING_URL_COPY_LINK_CLASS}`)
+        .forEach((link) => link.remove());
 
-    // link copy handler
-    document
-      .querySelectorAll(`a.${constants.HEADING_URL_COPY_LINK_CLASS}`)
-      .forEach((element) => {
-        element.attributes.removeNamedItem("onClick");
-        element.addEventListener("click", () => {
-          void navigator.clipboard.writeText(
-            window.location.origin +
-              window.location.pathname +
-              element.getAttribute("href"),
-          );
-          toast.success("Link copied!");
-        });
+      const separator = document.createTextNode(" ");
+      const link = document.createElement("a");
+      const icon = document.createElement("span");
+
+      link.className = constants.HEADING_URL_COPY_LINK_CLASS;
+      link.href = `#${heading.id}`;
+      icon.className = "material-icons cursor-pointer select-none";
+      icon.style.fontSize = "1.2em";
+      icon.textContent = "link";
+      link.append(icon);
+
+      const handleClick = () => {
+        void navigator.clipboard.writeText(
+          window.location.origin +
+            window.location.pathname +
+            link.getAttribute("href"),
+        );
+        toast.success("Link copied!");
+      };
+
+      link.addEventListener("click", handleClick);
+      heading.append(separator, link);
+
+      cleanups.push(() => {
+        link.removeEventListener("click", handleClick);
+        separator.remove();
+        link.remove();
       });
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
   }, []);
 
   return (
