@@ -10,9 +10,19 @@ import { strings } from "@/app/common/strings";
 
 const Usage8 = (): React.JSX.Element => {
   const [output, setOutput] = React.useState(`${strings.clickRunButton}`);
-  const appendOutput = (toAppend: string) =>
-    setOutput((it) => `${it}\n${toAppend}`);
+  const [nestedOutput, setNestedOutput] = React.useState(
+    `${strings.clickRunButton}`,
+  );
+  const appendOutput = React.useCallback(
+    (toAppend: string) => setOutput((it) => `${it}\n${toAppend}`),
+    [],
+  );
+  const appendNestedOutput = React.useCallback(
+    (toAppend: string) => setNestedOutput((it) => `${it}\n${toAppend}`),
+    [],
+  );
   const retryCount = React.useRef(0);
+  const nestedRetryCount = React.useRef(0);
   const currentSiteUrl = typeof window === "undefined" ? undefined : window.origin;
 
   const fetchBaseUrlApplied = React.useMemo(
@@ -45,7 +55,7 @@ const Usage8 = (): React.JSX.Element => {
           },
         },
       }),
-    [fetchBaseUrlApplied],
+    [appendOutput, fetchBaseUrlApplied],
   );
 
   const fetchRetry = React.useMemo(() => {
@@ -54,17 +64,45 @@ const Usage8 = (): React.JSX.Element => {
     });
   }, [returnFetchRetry]);
 
+  const returnFetchRetryNested: ReturnFetch = React.useCallback(
+    (args) =>
+      returnFetch({
+        ...args,
+        fetch: args?.fetch ?? fetchBaseUrlApplied,
+        interceptors: {
+          response: async (response, requestArgs, fetch) => {
+            if (response.status !== 401) {
+              return response;
+            }
+
+            appendNestedOutput("not authorized, trying to get refresh cookie..");
+            const responseToRefreshCookie = await fetch("/sample/api/200");
+            if (responseToRefreshCookie.status !== 200) {
+              throw Error("failed to refresh cookie");
+            }
+
+            nestedRetryCount.current += 1;
+            appendNestedOutput(
+              `(#${nestedRetryCount.current}) succeeded to refresh cookie and retry request`,
+            );
+            return fetch(...requestArgs);
+          },
+        },
+      }),
+    [appendNestedOutput, fetchBaseUrlApplied],
+  );
+
   const fetchRetryNested = React.useMemo(() => {
     const nest = (
       remaining: number,
       providedFetch = fetchBaseUrlApplied,
     ): ReturnType<ReturnFetch> =>
       remaining > 0
-        ? nest(remaining - 1, returnFetchRetry({ fetch: providedFetch }))
+        ? nest(remaining - 1, returnFetchRetryNested({ fetch: providedFetch }))
         : providedFetch;
 
     return nest(4);
-  }, [fetchBaseUrlApplied, returnFetchRetry]);
+  }, [fetchBaseUrlApplied, returnFetchRetryNested]);
 
   return (
     <div>
@@ -197,15 +235,15 @@ fetchExtended("/sample/api/401")
       <div className={"mb-4"}>
         <Button
           onClick={() => {
-            retryCount.current = 0;
-            setOutput("Loading...");
+            nestedRetryCount.current = 0;
+            setNestedOutput("Loading...");
             fetchRetryNested("/sample/api/401")
               .then((it) => it.text())
               .then((it) => `Response body: "${it}"`)
-              .then(appendOutput)
+              .then(appendNestedOutput)
               .then(() => {
-                appendOutput(
-                  "\n Total counts of request: " + (retryCount.current + 1),
+                appendNestedOutput(
+                  "\n Total counts of request: " + (nestedRetryCount.current + 1),
                 );
               });
           }}
@@ -216,7 +254,7 @@ fetchExtended("/sample/api/401")
       <strong>Output</strong>
       <MarkdownRenderer
         markdown={`\`\`\`json
-${output}
+${nestedOutput}
 \`\`\``}
       />
     </div>
