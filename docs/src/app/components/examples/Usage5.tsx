@@ -122,17 +122,16 @@ Whatever a \`fetch\` you use, you can use \`return-fetch\` as long as the \`fetc
 
 #### #5-1. \`node-fetch\`
 
-I implemented a simple proxy for https://postman-echo.com with \`node-fetch\` as an example using
+I implemented a simple proxy for the local echo API (\`/sample/api/echo\`) with \`node-fetch\` as an example using
 [Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
 
 \`\`\`ts
-// src/app/sample/api/proxy/postman-echo/node-fetch/[[...path]]/route.ts
+// src/app/sample/api/proxy/echo/node-fetch/[[...path]]/route.ts
 import { NextRequest } from "next/server";
 import nodeFetch from "node-fetch";
 import returnFetch, { ReturnFetchDefaultOptions } from "return-fetch";
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
-const pathPrefix = "/sample/api/proxy/postman-echo/node-fetch";
+const pathPrefix = "/sample/api/proxy/echo/node-fetch";
 
 export async function GET(request: NextRequest) {
   const { nextUrl, method, headers } = request;
@@ -140,10 +139,11 @@ export async function GET(request: NextRequest) {
   const fetch = returnFetch({
     // Use node-fetch instead of global fetch
     fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
-    baseUrl: "https://postman-echo.com",
+    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
   });
 
-  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const response = await fetch(path + nextUrl.search, {
     method,
     headers,
   });
@@ -175,7 +175,7 @@ export const fetchExtended = returnFetchJson({
 
 //////////////////// Use it somewhere ////////////////////
 fetchExtended(
-  "/sample/api/proxy/postman-echo/node-fetch/get",
+  "/sample/api/proxy/echo/node-fetch/get",
   {
     headers: {
       "X-My-Custom-Header": "Hello World!"
@@ -191,7 +191,7 @@ fetchExtended(
             onClick={() => {
               setOutputNodeFetch("Loading...");
               fetch<{ message: string }>(
-                "/sample/api/proxy/postman-echo/node-fetch/get",
+                "/sample/api/proxy/echo/node-fetch/get",
                 {
                   headers: {
                     "X-My-Custom-Header": "Hello World!",
@@ -240,7 +240,7 @@ export const fetchExtended = returnFetchJson({
 
 //////////////////// Use it somewhere ////////////////////
 fetchExtended(
-  "/sample/api/proxy/postman-echo/node-fetch/get",
+  "/sample/api/proxy/echo/node-fetch/get",
   {
     headers: {
       "X-My-Custom-Header": "Hello World!"
@@ -256,7 +256,7 @@ fetchExtended(
             onClick={() => {
               setOutputWhatwgFetch("Loading...");
               whatwgFetchExtended<{ message: string }>(
-                "/sample/api/proxy/postman-echo/node-fetch/get",
+                "/sample/api/proxy/echo/node-fetch/get",
                 {
                   headers: {
                     "X-My-Custom-Header": "Hello World!",
@@ -284,27 +284,27 @@ ${outputWhatwgFetch}
         markdown={`
 #### #5-3. \`cross-fetch\`
 
-I implemented a simple proxy for https://postman-echo.com with \`cross-fetch\` as an example using
+I implemented a simple proxy for the local echo API (\`/sample/api/echo\`) with \`cross-fetch\` as an example using
 [Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
 
 \`\`\`ts
-// src/app/sample/api/proxy/postman-echo/cross-fetch/[[...path]]/route.ts
+// src/app/sample/api/proxy/echo/cross-fetch/[[...path]]/route.ts
 import { NextRequest } from "next/server";
 import crossFetch from "cross-fetch";
 import returnFetch from "return-fetch";
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
-const pathPrefix = "/sample/api/proxy/postman-echo/cross-fetch";
+const pathPrefix = "/sample/api/proxy/echo/cross-fetch";
 
 export async function GET(request: NextRequest) {
   const { nextUrl, method, headers } = request;
 
   const fetch = returnFetch({
     fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
-    baseUrl: "https://postman-echo.com",
+    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
   });
 
-  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const response = await fetch(path + nextUrl.search, {
     method,
     headers,
   });
@@ -338,7 +338,7 @@ export const fetchExtended = returnFetchJson({
 
 //////////////////// Use it somewhere ////////////////////
 fetchExtended(
-  "/sample/api/proxy/postman-echo/node-fetch/get",
+  "/sample/api/proxy/echo/node-fetch/get",
   {
     headers: {
       "X-My-Custom-Header": "Hello World!"
@@ -354,7 +354,7 @@ fetchExtended(
             onClick={() => {
               setOutputCrossFetch("Loading...");
               crossFetchExtended<{ message: string }>(
-                "/sample/api/proxy/postman-echo/cross-fetch/get",
+                "/sample/api/proxy/echo/cross-fetch/get",
                 {
                   headers: {
                     "X-My-Custom-Header": "Hello World!",
@@ -382,26 +382,26 @@ ${outputCrossFetch}
         markdown={`
 #### #5-4. Next.js built-in \`fetch\`
 
-I implemented a simple proxy for https://postman-echo.com with Next.js built-in \`fetch\` as an example using
+I implemented a simple proxy for the local echo API (\`/sample/api/echo\`) with Next.js built-in \`fetch\` as an example using
 [Next.js route handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers).
 
 \`\`\`ts
-// src/app/sample/api/proxy/postman-echo/nextjs-fetch/[[...path]]/route.ts
+// src/app/sample/api/proxy/echo/nextjs-fetch/[[...path]]/route.ts
 import { NextRequest } from "next/server";
 import returnFetch from "return-fetch";
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0"; // to turn off SSL certificate verification on server side
-const pathPrefix = "/sample/api/proxy/postman-echo/nextjs-fetch";
+const pathPrefix = "/sample/api/proxy/echo/nextjs-fetch";
 
 export async function GET(request: NextRequest) {
   const { nextUrl, method, headers } = request;
 
   const fetch = returnFetch({
     // omit fetch option to use Next.js built-in fetch
-    baseUrl: "https://postman-echo.com",
+    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
   });
 
-  const response = await fetch(nextUrl.pathname.replace(pathPrefix, ""), {
+  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const response = await fetch(path + nextUrl.search, {
     method,
     headers,
   });
@@ -433,7 +433,7 @@ export const fetchExtended = returnFetchJson({
 
 //////////////////// Use it somewhere ////////////////////
 fetchExtended(
-  "/sample/api/proxy/postman-echo/nextjs-fetch/get",
+  "/sample/api/proxy/echo/nextjs-fetch/get",
   {
     headers: {
       "X-My-Custom-Header": "Hello World!"
@@ -449,7 +449,7 @@ fetchExtended(
             onClick={() => {
               setOutputNextjsFetch("Loading...");
               fetch<{ message: string }>(
-                "/sample/api/proxy/postman-echo/nextjs-fetch/get",
+                "/sample/api/proxy/echo/nextjs-fetch/get",
                 {
                   headers: {
                     "X-My-Custom-Header": "Hello World!",

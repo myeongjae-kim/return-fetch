@@ -63,7 +63,7 @@ fetchExtended(
     An URL object cannot be created if an argument does not have origin.
     You should set a full URL to a URL object, so a baseURL will be ignored.
   */
-  new Request(new URL("https://return-fetch.myeongjae.kim/sample/api/proxy/postman-echo/nextjs-fetch/post"), {
+  new Request(new URL("https://return-fetch.myeongjae.kim/sample/api/proxy/echo/nextjs-fetch/post"), {
     method: "PUT",
     body: JSON.stringify({ message: "overwritten by requestInit" }),
     headers: {
@@ -88,7 +88,7 @@ fetchExtended(
               new Request(
                 new URL(
                   window.origin +
-                    "/sample/api/proxy/postman-echo/nextjs-fetch/post",
+                    "/sample/api/proxy/echo/nextjs-fetch/post",
                 ),
                 {
                   method: "PUT",
@@ -148,7 +148,7 @@ fetchExtended(
     While creating a Request object, an origin is set to 'https://return-fetch.myeongjae.kim',
     which is the origin of this page, so baseURL will be ignored.
   */
-  new Request("/sample/api/proxy/postman-echo/node-fetch/post", {
+  new Request("/sample/api/proxy/echo/node-fetch/post", {
     method: "PUT",
     body: JSON.stringify({ message: "overwritten by requestInit" }),
     headers: {
@@ -170,7 +170,7 @@ fetchExtended(
           onClick={() => {
             setRequestObjectOutput("Loading...");
             fetchForRequestObject(
-              new Request("/sample/api/proxy/postman-echo/nextjs-fetch/post", {
+              new Request("/sample/api/proxy/echo/nextjs-fetch/post", {
                 method: "PUT",
                 body: JSON.stringify({ message: "overwritten by requestInit" }),
                 headers: {
