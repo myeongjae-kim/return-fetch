@@ -13,10 +13,11 @@ const Usage8 = (): React.JSX.Element => {
   const appendOutput = (toAppend: string) =>
     setOutput((it) => `${it}\n${toAppend}`);
   const retryCount = React.useRef(0);
+  const currentSiteUrl = typeof window === "undefined" ? undefined : window.origin;
 
   const fetchBaseUrlApplied = React.useMemo(
-    () => returnFetch({ baseUrl: "https://httpstat.us" }),
-    [],
+    () => returnFetch({ baseUrl: currentSiteUrl }),
+    [currentSiteUrl],
   );
   const returnFetchRetry: ReturnFetch = React.useCallback(
     (args) =>
@@ -30,7 +31,7 @@ const Usage8 = (): React.JSX.Element => {
             }
 
             appendOutput("not authorized, trying to get refresh cookie..");
-            const responseToRefreshCookie = await fetch("/200");
+            const responseToRefreshCookie = await fetch("/sample/api/200");
             if (responseToRefreshCookie.status !== 200) {
               throw Error("failed to refresh cookie");
             }
@@ -49,7 +50,7 @@ const Usage8 = (): React.JSX.Element => {
 
   const fetchRetry = React.useMemo(() => {
     return returnFetchRetry({
-      baseUrl: "https://httpstat.us",
+      baseUrl: currentSiteUrl,
     });
   }, [returnFetchRetry]);
 
@@ -86,7 +87,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 
       console.log("not authorized, trying to get refresh cookie..");
       const responseToRefreshCookie = await fetch(
-        "https://httpstat.us/200",
+        "/sample/api/200",
       );
       if (responseToRefreshCookie.status !== 200) {
         throw Error("failed to refresh cookie");
@@ -100,10 +101,10 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 });
 
 const fetchExtended = returnFetchRetry({
-  baseUrl: "https://httpstat.us",
+  baseUrl: window.origin,
 });
 
-fetchExtended("/401")
+fetchExtended("/sample/api/401")
   .then((it) => it.text())
   .then((it) => \`Response body: "\${it}"\`)
   .then(console.log)
@@ -116,7 +117,7 @@ fetchExtended("/401")
           onClick={() => {
             retryCount.current = 0;
             setOutput("Loading...");
-            fetchRetry("/401")
+            fetchRetry("/sample/api/401")
               .then((it) => it.text())
               .then((it) => `Response body: "${it}"`)
               .then(appendOutput)
@@ -147,7 +148,9 @@ request 16 times (I know it is too much, but isn't it fun?).
 let retryCount = 0;
 
 // create a fetch function with baseUrl applied
-const fetchBaseUrlApplied = returnFetch({ baseUrl: "https://httpstat.us" });
+const fetchBaseUrlApplied = returnFetch({
+  baseUrl: window.origin,
+});
 
 const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   ...args,
@@ -160,9 +163,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
       }
 
       console.log("not authorized, trying to get refresh cookie..");
-      const responseToRefreshCookie = await fetch(
-        "/200",
-      );
+      const responseToRefreshCookie = await fetch("/sample/api/200");
       if (responseToRefreshCookie.status !== 200) {
         throw Error("failed to refresh cookie");
       }
@@ -185,7 +186,7 @@ const nest = (
 // nest 4 times -> 2^4 = 16
 const fetchExtended = nest(4);
 
-fetchExtended("/401")
+fetchExtended("/sample/api/401")
   .then((it) => it.text())
   .then((it) => \`Response body: "\${it}"\`)
   .then(console.log)
@@ -198,7 +199,7 @@ fetchExtended("/401")
           onClick={() => {
             retryCount.current = 0;
             setOutput("Loading...");
-            fetchRetryNested("/401")
+            fetchRetryNested("/sample/api/401")
               .then((it) => it.text())
               .then((it) => `Response body: "${it}"`)
               .then(appendOutput)

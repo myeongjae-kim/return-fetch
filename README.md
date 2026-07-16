@@ -732,7 +732,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 
       console.log("not authorized, trying to get refresh cookie..");
       const responseToRefreshCookie = await fetch(
-        "https://httpstat.us/200",
+        "/sample/api/200",
       );
       if (responseToRefreshCookie.status !== 200) {
         throw Error("failed to refresh cookie");
@@ -746,10 +746,10 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 });
 
 const fetchExtended = returnFetchRetry({
-  baseUrl: "https://httpstat.us",
+  baseUrl: window.origin,
 });
 
-fetchExtended("/401")
+fetchExtended("/sample/api/401")
   .then((it) => it.text())
   .then((it) => `Response body: "${it}"`)
   .then(console.log)
@@ -765,7 +765,9 @@ request 16 times (I know it is too much, but isn't it fun?).
 let retryCount = 0;
 
 // create a fetch function with baseUrl applied
-const fetchBaseUrlApplied = returnFetch({baseUrl: "https://httpstat.us"});
+const fetchBaseUrlApplied = returnFetch({
+  baseUrl: window.origin,
+});
 
 const returnFetchRetry: ReturnFetch = (args) => returnFetch({
   ...args,
@@ -778,7 +780,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
       }
 
       console.log("not authorized, trying to get refresh cookie..");
-      const responseToRefreshCookie = await fetch("/200");
+      const responseToRefreshCookie = await fetch("/sample/api/200");
       if (responseToRefreshCookie.status !== 200) {
         throw Error("failed to refresh cookie");
       }
@@ -801,7 +803,7 @@ const nest = (
 // nest 4 times -> 2^4 = 16
 const fetchExtended = nest(4);
 
-fetchExtended("/401")
+fetchExtended("/sample/api/401")
   .then((it) => it.text())
   .then((it) => `Response body: "${it}"`)
   .then(console.log)
