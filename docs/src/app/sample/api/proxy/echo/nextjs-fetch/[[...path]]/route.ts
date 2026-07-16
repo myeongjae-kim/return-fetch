@@ -14,8 +14,12 @@ async function proxy(request: NextRequest) {
     // @ts-expect-error -- duplex is supported by Node.js fetch but missing from RequestInit.
     duplex: "half",
   });
+  const body = await response.arrayBuffer();
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.delete("content-encoding");
+  responseHeaders.delete("content-length");
 
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: response.headers });
+  return new Response(body, { status: response.status, statusText: response.statusText, headers: responseHeaders });
 }
 
 export const GET = proxy;

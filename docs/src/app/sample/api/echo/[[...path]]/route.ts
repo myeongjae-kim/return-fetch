@@ -1,5 +1,14 @@
 import { NextRequest } from "next/server";
 
+const hiddenHeaders = new Set([
+  "authorization",
+  "cookie",
+  "forwarded",
+  "x-invocation-id",
+  "x-matched-path",
+  "x-real-ip",
+]);
+
 function toObject(values: URLSearchParams): Record<string, string | string[]> {
   const result: Record<string, string | string[]> = {};
 
@@ -11,8 +20,21 @@ function toObject(values: URLSearchParams): Record<string, string | string[]> {
   return result;
 }
 
+function publicHeaders(headers: Headers): Record<string, string> {
+  return Object.fromEntries(
+    [...headers].filter(([name]) => {
+      const normalizedName = name.toLowerCase();
+      return !(
+        hiddenHeaders.has(normalizedName) ||
+        normalizedName.startsWith("x-forwarded-") ||
+        normalizedName.startsWith("x-vercel-")
+      );
+    }),
+  );
+}
+
 async function echo(request: NextRequest): Promise<Response> {
-  const headers = Object.fromEntries(request.headers);
+  const headers = publicHeaders(request.headers);
   const args = toObject(request.nextUrl.searchParams);
   const body = await request.text();
   const contentType = request.headers.get("content-type") ?? "";

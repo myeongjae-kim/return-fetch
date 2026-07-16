@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
   });
   const path = "/sample/api/echo/" + nextUrl.pathname.replace(`${pathPrefix}/`, "");
   const response = await fetch(`${path}${nextUrl.search}`, { method, headers });
+  const body = await response.arrayBuffer();
+  const responseHeaders = new Headers(response.headers);
+  responseHeaders.delete("content-encoding");
+  responseHeaders.delete("content-length");
 
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers: response.headers });
+  return new Response(body, { status: response.status, statusText: response.statusText, headers: responseHeaders });
 }
