@@ -139,7 +139,7 @@ export async function GET(request: NextRequest) {
   const fetch = returnFetch({
     // Use node-fetch instead of global fetch
     fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
@@ -300,7 +300,7 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
@@ -397,7 +397,7 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     // omit fetch option to use Next.js built-in fetch
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);

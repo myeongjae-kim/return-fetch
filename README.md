@@ -384,7 +384,7 @@ export async function GET(request: NextRequest) {
   const fetch = returnFetch({
     // Use node-fetch instead of global fetch
     fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
@@ -480,7 +480,7 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
@@ -545,7 +545,7 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     // omit fetch option to use Next.js built-in fetch
-    baseUrl: nextUrl.origin,
+    baseUrl: "https://return-fetch.myeongjae.kim",
   });
 
   const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
@@ -746,7 +746,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 });
 
 const fetchExtended = returnFetchRetry({
-  baseUrl: window.origin,
+  baseUrl: "https://return-fetch.myeongjae.kim",
 });
 
 fetchExtended("/sample/api/401")
@@ -766,7 +766,7 @@ let retryCount = 0;
 
 // create a fetch function with baseUrl applied
 const fetchBaseUrlApplied = returnFetch({
-  baseUrl: window.origin,
+  baseUrl: "https://return-fetch.myeongjae.kim",
 });
 
 const returnFetchRetry: ReturnFetch = (args) => returnFetch({

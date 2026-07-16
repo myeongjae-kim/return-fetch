@@ -139,7 +139,7 @@ const returnFetchRetry: ReturnFetch = (args) => returnFetch({
 });
 
 const fetchExtended = returnFetchRetry({
-  baseUrl: window.origin,
+  baseUrl: "https://return-fetch.myeongjae.kim",
 });
 
 fetchExtended("/sample/api/401")
@@ -187,7 +187,7 @@ let retryCount = 0;
 
 // create a fetch function with baseUrl applied
 const fetchBaseUrlApplied = returnFetch({
-  baseUrl: window.origin,
+  baseUrl: "https://return-fetch.myeongjae.kim",
 });
 
 const returnFetchRetry: ReturnFetch = (args) => returnFetch({
