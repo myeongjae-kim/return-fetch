@@ -36,7 +36,7 @@
     "typedoc": "typedoc src/index.ts --out docs/public/docs",
     "build": "pnpm run clean && pnpm run bundle && sh ./scripts/generate-cts.sh",
     "dev": "microbundle watch",
-    "prepublishOnly": "pnpm run test && pnpm run build",
+    "prepublishOnly": "npx only-allow pnpm && pnpm run test && pnpm run build",
     "watch": "pnpm run clean && tsc -w",
     "test": "vitest run --dir tests",
     "test:watch": "vitest --dir tests",
