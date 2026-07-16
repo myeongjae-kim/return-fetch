@@ -1,7 +1,7 @@
 {
   "name": "return-fetch-json",
   "type": "module",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "An extended function of return-fetch ot serialize request body and deserialize response body as object.",
   "source": "src/index.ts",
   "exports": {
@@ -66,6 +66,6 @@
     "return-fetch": "workspace:^"
   },
   "peerDependencies": {
-    "return-fetch": "^0.4.9"
+    "return-fetch": "^0.4.10"
   }
 }
