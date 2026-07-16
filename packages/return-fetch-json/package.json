@@ -32,7 +32,7 @@
     "clean": "rimraf dist",
     "bundle": "microbundle --format modern,cjs,umd",
     "typedoc": "typedoc src/index.ts --out docs/public/docs",
-    "build": "pnpm run clean && pnpm run bundle && sh ../../scripts/generate-cts.sh",
+    "build": "pnpm run clean && pnpm run bundle && sh ../../scripts/generate-cts.sh && rimraf dist/index.d.ts\\'\\'",
     "dev": "microbundle watch",
     "prepublishOnly": "npx only-allow pnpm && pnpm run test && pnpm run build",
     "watch": "pnpm run clean && tsc -w",
