@@ -6,8 +6,8 @@ const pathPrefix = "/sample/api/proxy/echo/cross-fetch";
 
 export async function GET(request: NextRequest) {
   const { nextUrl, method, headers } = request;
-  const fetch = returnFetch({ fetch: crossFetch, baseUrl: `${nextUrl.origin}/sample/api/echo/` });
-  const path = nextUrl.pathname.replace(`${pathPrefix}/`, "");
+  const fetch = returnFetch({ fetch: crossFetch, baseUrl: nextUrl.origin });
+  const path = "/sample/api/echo/" + nextUrl.pathname.replace(`${pathPrefix}/`, "");
   const response = await fetch(`${path}${nextUrl.search}`, { method, headers });
 
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers: response.headers });

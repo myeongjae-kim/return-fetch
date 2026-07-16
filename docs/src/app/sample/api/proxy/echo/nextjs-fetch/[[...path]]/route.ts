@@ -5,8 +5,8 @@ const pathPrefix = "/sample/api/proxy/echo/nextjs-fetch";
 
 async function proxy(request: NextRequest) {
   const { nextUrl, method, headers } = request;
-  const fetch = returnFetch({ baseUrl: `${nextUrl.origin}/sample/api/echo/` });
-  const path = nextUrl.pathname.replace(`${pathPrefix}/`, "");
+  const fetch = returnFetch({ baseUrl: nextUrl.origin });
+  const path = "/sample/api/echo/" + nextUrl.pathname.replace(`${pathPrefix}/`, "");
   const response = await fetch(`${path}${nextUrl.search}`, {
     method,
     headers,

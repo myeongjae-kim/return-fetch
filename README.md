@@ -384,10 +384,10 @@ export async function GET(request: NextRequest) {
   const fetch = returnFetch({
     // Use node-fetch instead of global fetch
     fetch: nodeFetch as ReturnFetchDefaultOptions["fetch"],
-    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
+    baseUrl: nextUrl.origin,
   });
 
-  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
   const response = await fetch(path + nextUrl.search, {
     method,
     headers,
@@ -480,10 +480,10 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     fetch: crossFetch, // Use cross-fetch instead of built-in Next.js fetch
-    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
+    baseUrl: nextUrl.origin,
   });
 
-  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
   const response = await fetch(path + nextUrl.search, {
     method,
     headers,
@@ -545,10 +545,10 @@ export async function GET(request: NextRequest) {
 
   const fetch = returnFetch({
     // omit fetch option to use Next.js built-in fetch
-    baseUrl: new URL("/sample/api/echo/", nextUrl.origin).toString(),
+    baseUrl: nextUrl.origin,
   });
 
-  const path = nextUrl.pathname.slice(pathPrefix.length + 1);
+  const path = "/sample/api/echo/" + nextUrl.pathname.slice(pathPrefix.length + 1);
   const response = await fetch(path + nextUrl.search, {
     method,
     headers,
