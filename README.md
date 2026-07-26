@@ -20,10 +20,10 @@ interceptors. <br/>
     <img src="https://img.shields.io/codecov/c/github/myeongjae-kim/return-fetch.svg" alt="Test Coverage" height="18">
   </a>
   <a href="https://www.npmjs.com/package/return-fetch">
-    <img src="https://img.shields.io/npm/v/return-fetch.svg" alt="npm version" height="18">
+    <img src="https://nodei.co/npm/return-fetch.svg?style=shields&data=v,u,d&color=brightgreen" alt="npm version, updated date, weelky downloads" height="18">
   </a>
-  <a href="https://bundlephobia.com/package/return-fetch">
-    <img src="https://img.shields.io/bundlephobia/minzip/return-fetch" alt="Bundle Size" height="18">
+  <a href="https://bundlejs.com/?q=return-fetch">
+    <img src="https://deno.bundlejs.com/?q=return-fetch&badge" alt="Bundle Size" height="18">
   </a>
   <a href="https://raw.githubusercontent.com/myeongjae-kim/return-fetch/main/LICENSE">
     <img src="https://img.shields.io/npm/l/return-fetch.svg" alt="MIT license" height="18">
