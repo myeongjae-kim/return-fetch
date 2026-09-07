@@ -33,14 +33,12 @@ export type ResponseGenericBody<T> = Omit<
   body: T;
 };
 
-export type JsonResponse<T> = T extends object
-  ? ResponseGenericBody<T>
-  : ResponseGenericBody<unknown>;
+export type JsonResponse<T> = ResponseGenericBody<T | string>;
 
 
 // this resembles the default behavior of axios json parser
 // https://github.com/axios/axios/blob/21a5ad34c4a5956d81d338059ac0dd34a19ed094/lib/defaults/index.js#L25
-const parseJsonSafely = (text: string): object | string => {
+const parseJsonSafely = (text: string): unknown => {
   try {
     return JSON.parse(text);
   } catch (e) {
@@ -56,8 +54,8 @@ const parseJsonSafely = (text: string): object | string => {
 export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T>(
-    url: FetchArgs[0],
+  return async <T = unknown>(
+    url: string | URL,
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
     const response = await fetch(url, {
@@ -76,7 +74,7 @@ export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       type: response.type,
       url: response.url,
       body,
-    } as JsonResponse<T>;
+    };
   };
 };
 

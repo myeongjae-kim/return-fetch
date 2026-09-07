@@ -46,6 +46,16 @@ fetchExtended<{ id: number }>("/posts", {
   .then(console.log);
 ```
 
+Header precedence is per-call headers, then factory headers, then the built-in
+`application/json` defaults. Explicit empty header values are preserved.
+
+`JsonResponse<T>.body` is `T | string`: valid JSON can be an object, array, number,
+boolean or null, and invalid JSON is returned as trimmed text. The generic describes
+the expected JSON value; it does not validate the server's response. Calls without
+a type argument return an `unknown` body. Check for a string before accessing
+properties of an expected object. This replaces the previous object-only conditional
+response type.
+
 ## Installation
 
 ### Package Manager

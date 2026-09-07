@@ -15,9 +15,9 @@ jobs:
         with:
           node-version: ${{ matrix.nodejs }}
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 12.3.4
 
       - name: (cache) restore
         uses: actions/cache@master
@@ -30,6 +30,18 @@ jobs:
 
       - name: (coverage) Test
         run: pnpm run coverage
+
+      - name: Check source and test types
+        run: |
+          pnpm run check
+          pnpm run check:tests
+
+      - name: Build both packages and enforce bundle budgets
+        run: |
+          pnpm run bundle
+          pnpm --filter return-fetch-json run bundle
+          pnpm --filter return-fetch-json run check
+          pnpm run check:size
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3

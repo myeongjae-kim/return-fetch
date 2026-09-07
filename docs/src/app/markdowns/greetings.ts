@@ -30,7 +30,7 @@ In implementing the \`fetch\` interceptors, I considered the following points:
 
 ### Good Things
 
-- Superlight bundle size < 1KB.
+- Superlight bundle size < 900 bytes (gzip-compressed core ESM bundle).
 - No peer dependencies.
 - No side effects. Pure functional.
 - No classes. Just a function.

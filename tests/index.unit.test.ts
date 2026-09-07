@@ -112,6 +112,7 @@ describe("returnFetch", () => {
   it("should call request, response interceptors", async () => {
     // given
     const mockShouldBeCalledInInterceptors = vi.fn();
+    fetchMocked.mockResolvedValue(new Response("original body"));
 
     const fetchExtended = returnFetch({
       interceptors: {
@@ -125,11 +126,7 @@ describe("returnFetch", () => {
         response: async (response) => {
           mockShouldBeCalledInInterceptors("response interceptor called");
 
-          const body: ReadableStream<Uint8Array> = new Blob([
-            "force-set-body",
-          ]).stream();
-
-          return { ...response, body };
+          return new Response("force-set-body", response);
         },
       },
     });
@@ -219,18 +216,16 @@ describe("returnFetch", () => {
     };
 
     // when
-    await fetchExtended(
-      new Request("https://base-url.com/todos/1", requestInit),
-    );
+    const request = new Request("https://base-url.com/todos/1", requestInit);
+    await fetchExtended(request);
 
     // then
-    expect(fetchMocked.mock.calls[0][0]).toBe("https://base-url.com/todos/1");
-    await expect(
-      new Response(fetchMocked.mock.calls[0][1].body).text(),
-    ).resolves.toBe('{"hello":"world!"}');
-    const { body: _, ...rest } = requestInit;
-
-    const actualRequestInit: RequestInit = fetchMocked.mock.calls[0][1];
+    expect(fetchMocked.mock.calls[0][0]).toBe(request);
+    expect(fetchMocked.mock.calls[0][1]).toBeUndefined();
+    await expect(new Response(request.body).text()).resolves.toBe(
+      '{"hello":"world!"}',
+    );
+    const actualRequestInit: RequestInit = request;
     expect(actualRequestInit.method).toBe(requestInit.method);
     expect(new Headers(actualRequestInit.headers)).toStrictEqual(
       requestInit.headers,
@@ -273,12 +268,10 @@ describe("returnFetch", () => {
     );
 
     // then
-    expect(fetchMocked.mock.calls[0][0]).toBe("https://base-url.com/todos/1");
+    expect(fetchMocked.mock.calls[0][0]).toBeInstanceOf(Request);
     await expect(
       new Response(fetchMocked.mock.calls[0][1].body).text(),
     ).resolves.toBe('{"hello":"world!"}');
-    const { body: _, ...rest } = requestInit;
-
     const actualRequestInit: RequestInit = fetchMocked.mock.calls[0][1];
     expect(actualRequestInit.method).toBe("POST");
     expect(new Headers(actualRequestInit.headers)).toStrictEqual(
@@ -292,7 +285,7 @@ describe("returnFetch", () => {
     expect(actualRequestInit.redirect).toBe(requestInit.redirect);
     expect(actualRequestInit.integrity).toBe(requestInit.integrity);
     expect(actualRequestInit.keepalive).toBe(requestInit.keepalive);
-    expect(actualRequestInit.signal).instanceof(AbortSignal);
+    expect(actualRequestInit.signal).toBeNull();
     expect(actualRequestInit.window).toBeNull();
   });
 });

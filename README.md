@@ -39,14 +39,14 @@ const fetchExtended = returnFetch({
   interceptors: {
     request: async (args) => {
       console.log("********* before sending request *********");
-      console.log("url:", args[0].toString());
+      console.log("url:", args[0] instanceof Request ? args[0].url : args[0].toString());
       console.log("requestInit:", args[1], "\n\n");
       return args;
     },
 
-    response: async (requestArgs, response) => {
+    response: async (response, requestArgs) => {
       console.log("********* after receiving response *********");
-      console.log("url:", requestArgs[0].toString());
+      console.log("url:", requestArgs[0] instanceof Request ? requestArgs[0].url : requestArgs[0].toString());
       console.log("requestInit:", requestArgs[1], "\n\n");
       return response;
     },
@@ -110,7 +110,7 @@ In implementing the `fetch` interceptors, I considered the following points:
 
 ### Good Things
 
-- Superlight bundle size < 1KB.
+- Superlight bundle size < 900 bytes (gzip-compressed core ESM bundle).
 - No peer dependencies.
 - No side effects. Pure functional.
 - No classes. Just a function.
@@ -184,11 +184,11 @@ const returnFetchWithLoadingIndicator: ReturnFetch = (args) => returnFetch({
   ...args,
   interceptors: {
     request: async (args) => {
-      setLoading(true);
+      displayLoadingIndicator();
       return args;
     },
-    response: async (requestArgs, response) => {
-      setLoading(false);
+    response: async (response) => {
+      hideLoadingIndicator();
       return response;
     },
   },
@@ -212,7 +212,7 @@ import returnFetch, { ReturnFetch } from "return-fetch";
 const returnFetchThrowingErrorByStatusCode: ReturnFetch = (args) => returnFetch({
   ...args,
   interceptors: {
-    response: async (_, response) => {
+    response: async (response) => {
       if (response.status >= 400) {
         throw await response.text().then(Error);
       }
@@ -250,14 +250,12 @@ export type ResponseGenericBody<T> = Omit<
   body: T;
 };
 
-export type JsonResponse<T> = T extends object
-  ? ResponseGenericBody<T>
-  : ResponseGenericBody<string>;
+export type JsonResponse<T> = ResponseGenericBody<T | string>;
 
 
 // this resembles the default behavior of axios json parser
 // https://github.com/axios/axios/blob/21a5ad34c4a5956d81d338059ac0dd34a19ed094/lib/defaults/index.js#L25
-const parseJsonSafely = (text: string): object | string => {
+const parseJsonSafely = (text: string): unknown => {
   try {
     return JSON.parse(text);
   } catch (e) {
@@ -273,8 +271,8 @@ const parseJsonSafely = (text: string): object | string => {
 export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T>(
-    url: FetchArgs[0],
+  return async <T = unknown>(
+    url: string | URL,
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
     const response = await fetch(url, {
@@ -293,7 +291,7 @@ export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       type: response.type,
       url: response.url,
       body,
-    } as JsonResponse<T>;
+    };
   };
 };
 
@@ -631,6 +629,24 @@ any features of `fetch`.
 
 **Be careful! the default options' baseURL does not applied to a `URL` or `Request` object.** Default headers are
 still applied to a `Request` object as you expected.
+
+`Request` inputs are forwarded intact: their bodies are not buffered or consumed by
+`return-fetch`. Request interceptors and response interceptors receive that same
+`Request` as `requestArgs[0]`, rather than a URL string and an extracted body. Use
+`input instanceof Request ? input.url : input.toString()` when reading the URL.
+The second argument keeps the caller's options, including implementation-specific
+options. To override a Request's method or body, return the desired options from
+the request interceptor, just as you would pass the second argument to `fetch`.
+
+When default headers are configured, they are merged with `init.headers` if supplied,
+otherwise with the Request's headers. An explicit `init.headers` replaces the Request's
+headers before defaults are applied, following native fetch's override behavior.
+
+**Migration:** interceptors that assumed `FetchArgs[0]` was always a string or URL
+must also handle `Request`. Request bodies remain single-use, as with native fetch.
+When retrying a request with a body, clone the Request before the first attempt and
+pass the unused clone to the retry. A body stream supplied in `init.body` needs its
+own fresh body for each attempt.
 
 #### #7-1. `URL` object as a first argument
 

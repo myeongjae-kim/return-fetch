@@ -22,16 +22,12 @@ export type ResponseGenericBody<T> = Omit<
   body: T;
 };
 
-export type JsonResponse<T> = T extends object
-  ? ResponseGenericBody<T>
-  : ResponseGenericBody<string>;
+/** Parsed JSON, or trimmed text when the response is not valid JSON. */
+export type JsonResponse<T> = ResponseGenericBody<T | string>;
 
 // this resembles the default behavior of axios json parser
 // https://github.com/axios/axios/blob/21a5ad34c4a5956d81d338059ac0dd34a19ed094/lib/defaults/index.js#L25
-const parseJsonSafely = (
-  text: string,
-  jsonParser = JSON.parse,
-): object | string => {
+const parseJsonSafely = (text: string, jsonParser = JSON.parse): unknown => {
   try {
     return jsonParser(text);
   } catch (e) {
@@ -47,16 +43,17 @@ const parseJsonSafely = (
 const returnFetchJson = (args?: ReturnFetchJsonDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T>(
-    url: FetchArgs[0],
+  return async <T = unknown>(
+    url: string | URL,
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
-    const headers = new Headers(init?.headers);
+    const headers = new Headers(args?.headers);
+    new Headers(init?.headers).forEach((value, key) => headers.set(key, value));
     if (init?.method && init.method.toUpperCase() !== "GET") {
-      headers.get("Content-Type") ||
+      headers.has("Content-Type") ||
         headers.set("Content-Type", "application/json");
     }
-    headers.get("Accept") || headers.set("Accept", "application/json");
+    headers.has("Accept") || headers.set("Accept", "application/json");
 
     const response = await fetch(url, {
       ...init,
@@ -75,7 +72,7 @@ const returnFetchJson = (args?: ReturnFetchJsonDefaultOptions) => {
       type: response.type,
       url: response.url,
       body,
-    } as JsonResponse<T>;
+    };
   };
 };
 

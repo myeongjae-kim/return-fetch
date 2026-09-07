@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "paths": { "return-fetch": ["./src/index.ts"] }
+  },
+  "include": [
+    "src",
+    "tests",
+    "packages/return-fetch-json/src",
+    "packages/return-fetch-json/tests"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

@@ -7,12 +7,12 @@
 /**
  * Arguments of fetch function.
  *
- * @throws {Error} if a first argument of fetch is `Request` object. only string and URL are supported.
+ * Request inputs are passed through without reading their bodies.
  * @see {fetch, RequestInfo, Request}
  *
  * @public
  */
-export type FetchArgs = [string | URL, RequestInit | undefined];
+export type FetchArgs = [RequestInfo | URL, RequestInit | undefined];
 
 /**
  * Type of `returnFetch` function.
@@ -47,7 +47,8 @@ export type ReturnFetchDefaultOptions = {
   /**
    * Default headers of fetch. It will be used when the second argument of fetch does not have `headers` property.
    * If it is provided and `headers` also provided when calling a `fetch`, headers will be merged.
-   * Priority of headers is `requestInit.headers` > `defaultOptions.headers`. Duplicated headers will be overwritten.
+   * Call headers override defaults. For Request inputs, omitted call headers inherit
+   * the Request's headers; explicit call headers replace them before merging defaults.
    *
    * @public
    */
@@ -86,13 +87,19 @@ const applyDefaultOptions = (
   [input, requestInit]: FetchArgs,
   defaultOptions?: ReturnFetchDefaultOptions,
 ): FetchArgs => {
+  const isRequest = input instanceof Request;
+  if (isRequest && !defaultOptions?.headers) {
+    return [input, requestInit];
+  }
   const headers = new Headers(defaultOptions?.headers);
-  new Headers(requestInit?.headers).forEach((value, key) => {
+  new Headers(
+    requestInit?.headers ?? (isRequest ? input.headers : undefined),
+  ).forEach((value, key) => {
     headers.set(key, value);
   });
 
   let inputToReturn: FetchArgs[0] = input;
-  if (defaultOptions?.baseUrl) {
+  if (!isRequest && defaultOptions?.baseUrl) {
     inputToReturn = new URL(input, defaultOptions.baseUrl);
   }
 
@@ -105,64 +112,11 @@ const applyDefaultOptions = (
   ];
 };
 
-// To handle Request object we need to read body as ArrayBuffer.
-// If you have a better way, please let me know.
-const mergeRequestObjectWithRequestInit = async (
-  request: Request,
-  requestInit?: RequestInit,
-): Promise<RequestInit> => {
-  const hasRequestInit =
-    requestInit !== undefined && Object.keys(requestInit).length > 0;
-  const mergedRequest = new Request(
-    request,
-    hasRequestInit
-      ? requestInit
-      : {
-          referrer: request.referrer,
-          referrerPolicy: request.referrerPolicy,
-        },
-  );
-
-  const body = await mergedRequest.arrayBuffer();
-
-  return {
-    method: mergedRequest.method,
-    headers: mergedRequest.headers,
-    body: body.byteLength ? body : undefined,
-    referrer: mergedRequest.referrer,
-    referrerPolicy: mergedRequest.referrerPolicy,
-    mode: mergedRequest.mode,
-    cache: mergedRequest.cache,
-    redirect: mergedRequest.redirect,
-    credentials: mergedRequest.credentials,
-    integrity: mergedRequest.integrity,
-    keepalive: mergedRequest.keepalive,
-    signal: mergedRequest.signal,
-    window: requestInit?.window,
-  };
-};
-
-const normalizeArgs = async (
-  ...args: Parameters<typeof fetch>
-): Promise<FetchArgs> => {
-  let input: string | URL;
-  let requestInit: RequestInit | undefined;
-  if (args[0] instanceof Request) {
-    input = args[0].url;
-    requestInit = await mergeRequestObjectWithRequestInit(args[0], args[1]);
-  } else {
-    input = args[0];
-    requestInit = args[1];
-  }
-
-  return [input, requestInit];
-};
-
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
-  async (...args: Parameters<typeof fetch>): Promise<Response> => {
+  async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const defaultOptionAppliedArgs = applyDefaultOptions(
-      await normalizeArgs(...args),
+      [input, init],
       defaultOptions,
     );
 
