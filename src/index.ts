@@ -82,29 +82,6 @@ export type ReturnFetchDefaultOptions = {
   };
 };
 
-const applyDefaultOptions = (
-  [input, requestInit]: FetchArgs,
-  defaultOptions?: ReturnFetchDefaultOptions,
-): FetchArgs => {
-  const headers = new Headers(defaultOptions?.headers);
-  new Headers(requestInit?.headers).forEach((value, key) => {
-    headers.set(key, value);
-  });
-
-  let inputToReturn: FetchArgs[0] = input;
-  if (defaultOptions?.baseUrl) {
-    inputToReturn = new URL(input, defaultOptions.baseUrl);
-  }
-
-  return [
-    inputToReturn,
-    {
-      ...requestInit,
-      headers,
-    },
-  ];
-};
-
 // Keep the legacy reusable body while allowing aborts before fetch starts.
 const bufferRequestBody = (
   request: Request,
@@ -192,10 +169,15 @@ const normalizeArgs = (
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
   async (...args: Parameters<typeof fetch>): Promise<Response> => {
-    const defaultOptionAppliedArgs = applyDefaultOptions(
-      await normalizeArgs(...args),
-      defaultOptions,
-    );
+    const [input, requestInit] = await normalizeArgs(...args);
+    const headers = new Headers(defaultOptions?.headers);
+    new Headers(requestInit?.headers).forEach((value, key) => {
+      headers.set(key, value);
+    });
+    const defaultOptionAppliedArgs: FetchArgs = [
+      defaultOptions?.baseUrl ? new URL(input, defaultOptions.baseUrl) : input,
+      { ...requestInit, headers },
+    ];
 
     // apply request interceptor
     const fetchProvided = defaultOptions?.fetch || fetch;
