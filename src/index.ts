@@ -105,58 +105,89 @@ const applyDefaultOptions = (
   ];
 };
 
-// To handle Request object we need to read body as ArrayBuffer.
-// If you have a better way, please let me know.
-const mergeRequestObjectWithRequestInit = async (
+// Keep the legacy reusable body while allowing aborts before fetch starts.
+const bufferRequestBody = (
+  request: Request,
+): Promise<ArrayBuffer> | undefined => {
+  const { body, signal } = request;
+  if (body === null) return;
+
+  // Piping propagates abort to both the source and the buffered response.
+  // Native consumption also validates byte chunks and handles cross-realm views.
+  // Older fetch polyfills keep their original arrayBuffer behavior.
+  const source =
+    typeof TransformStream === "undefined" || !body?.pipeThrough
+      ? request
+      : new Response(body.pipeThrough(new TransformStream(), { signal }));
+  return source.arrayBuffer();
+};
+
+// Normalize native fields, then buffer for the existing interceptor contract.
+const normalizeBufferedRequest = async (
   request: Request,
   requestInit?: RequestInit,
-): Promise<RequestInit> => {
-  const hasRequestInit =
-    requestInit !== undefined && Object.keys(requestInit).length > 0;
+): Promise<FetchArgs> => {
+  // Let native Request read options in its own order, but evaluate each getter
+  // only once when retaining those options after normalization.
+  const values: Record<PropertyKey, unknown> = Object.create(null);
+  const options =
+    requestInit === undefined
+      ? undefined
+      : new Proxy(requestInit, {
+          get(target, key) {
+            if (!(key in values)) {
+              values[key] = (target as Record<PropertyKey, unknown>)[key];
+            }
+            return values[key];
+          },
+        });
   const mergedRequest = new Request(
     request,
-    hasRequestInit
-      ? requestInit
+    options && Object.keys(options).length
+      ? options
       : {
           referrer: request.referrer,
           referrerPolicy: request.referrerPolicy,
         },
   );
 
-  const body = await mergedRequest.arrayBuffer();
-
-  return {
-    method: mergedRequest.method,
-    headers: mergedRequest.headers,
-    body: body.byteLength ? body : undefined,
-    referrer: mergedRequest.referrer,
-    referrerPolicy: mergedRequest.referrerPolicy,
-    mode: mergedRequest.mode,
-    cache: mergedRequest.cache,
-    redirect: mergedRequest.redirect,
-    credentials: mergedRequest.credentials,
-    integrity: mergedRequest.integrity,
-    keepalive: mergedRequest.keepalive,
-    signal: mergedRequest.signal,
-    window: requestInit?.window,
-  };
+  const body = await bufferRequestBody(mergedRequest);
+  // Copy native fields in the legacy order; preserve only the buffered body.
+  const normalized: RequestInit = { ...options };
+  (
+    [
+      "method",
+      "headers",
+      "body",
+      "referrer",
+      "referrerPolicy",
+      "mode",
+      "cache",
+      "redirect",
+      "credentials",
+      "integrity",
+      "keepalive",
+      "signal",
+    ] as const
+  ).forEach((key) => {
+    (normalized as Record<string, unknown>)[key] =
+      key === "body"
+        ? body && body.byteLength
+          ? body
+          : undefined
+        : mergedRequest[key];
+  });
+  normalized.window = options?.window;
+  return [request.url, normalized];
 };
 
-const normalizeArgs = async (
-  ...args: Parameters<typeof fetch>
-): Promise<FetchArgs> => {
-  let input: string | URL;
-  let requestInit: RequestInit | undefined;
-  if (args[0] instanceof Request) {
-    input = args[0].url;
-    requestInit = await mergeRequestObjectWithRequestInit(args[0], args[1]);
-  } else {
-    input = args[0];
-    requestInit = args[1];
-  }
-
-  return [input, requestInit];
-};
+const normalizeArgs = (
+  input: RequestInfo | URL,
+  init?: RequestInit,
+): FetchArgs | Promise<FetchArgs> =>
+  input instanceof Request
+    ? normalizeBufferedRequest(input, init)
+    : [input, init];
 
 const returnFetch =
   (defaultOptions?: ReturnFetchDefaultOptions) =>
@@ -168,16 +199,12 @@ const returnFetch =
 
     // apply request interceptor
     const fetchProvided = defaultOptions?.fetch || fetch;
-    let requestInterceptorAppliedArgs: FetchArgs;
-    if (defaultOptions?.interceptors?.request) {
-      requestInterceptorAppliedArgs =
-        await defaultOptions?.interceptors?.request?.(
+    const requestInterceptorAppliedArgs = defaultOptions?.interceptors?.request
+      ? await defaultOptions.interceptors.request(
           defaultOptionAppliedArgs,
           fetchProvided,
-        );
-    } else {
-      requestInterceptorAppliedArgs = defaultOptionAppliedArgs;
-    }
+        )
+      : defaultOptionAppliedArgs;
 
     // ajax call
     const response = await fetchProvided(...requestInterceptorAppliedArgs);

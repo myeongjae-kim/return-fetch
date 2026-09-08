@@ -645,6 +645,18 @@ input reusable; that stream still needs a fresh body for each attempt.
 Call headers replace Request headers when supplied, and the resulting headers
 override factory defaults.
 
+Caller-supplied extension options (such as `next` or `priority`) are retained in
+the normalized options, while native normalized fields such as method, headers
+and body take precedence. Requests without a body skip buffering.
+Call-option getters are read lazily and their values are reused, so retaining
+extension options does not reevaluate getters already read by native Request.
+
+With standard `ReadableStream.pipeThrough` and `TransformStream` support, aborting
+during buffering also cancels the source stream and rejects before interceptors
+or fetch run. The rejection preserves the signal's abort reason. Older fetch
+polyfills without these APIs retain the original `arrayBuffer()` behavior; they
+do not gain cancellation during buffering.
+
 #### #7-1. `URL` object as a first argument
 
 Even a `baseUrl` is set to 'https://google.com', it is not applied to a `URL` object. An `URL` object cannot be
