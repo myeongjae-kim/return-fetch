@@ -23,9 +23,9 @@ const badges: Badge[] = [
     alt: "npm version",
   },
   {
-    href: "https://bundlephobia.com/package/return-fetch",
-    src: "https://img.shields.io/bundlephobia/minzip/return-fetch",
-    alt: "Bundle Size",
+    href: "https://www.npmjs.com/package/return-fetch",
+    src: "https://nodei.co/npm/return-fetch.svg?style=shields&data=v,u,d&color=brightgreen",
+    alt: "npm version, updated date, weekly downloads",
   },
   {
     href: "https://raw.githubusercontent.com/myeongjae-kim/return-fetch/main/LICENSE",
