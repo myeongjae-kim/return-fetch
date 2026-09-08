@@ -1,4 +1,6 @@
-export type JsonResponse<T> = ResponseGenericBody<T | string>;
+export type JsonResponse<T> = T extends object
+  ? ResponseGenericBody<T>
+  : ResponseGenericBody<unknown>;
 
 export type ResponseGenericBody<T> = Omit<
   Awaited<ReturnType<typeof fetch>>,

@@ -220,12 +220,11 @@ describe("returnFetch", () => {
     await fetchExtended(request);
 
     // then
-    expect(fetchMocked.mock.calls[0][0]).toBe(request);
-    expect(fetchMocked.mock.calls[0][1]).toBeUndefined();
-    await expect(new Response(request.body).text()).resolves.toBe(
-      '{"hello":"world!"}',
-    );
-    const actualRequestInit: RequestInit = request;
+    expect(fetchMocked.mock.calls[0][0]).toBe(request.url);
+    await expect(
+      new Response(fetchMocked.mock.calls[0][1].body).text(),
+    ).resolves.toBe('{"hello":"world!"}');
+    const actualRequestInit: RequestInit = fetchMocked.mock.calls[0][1];
     expect(actualRequestInit.method).toBe(requestInit.method);
     expect(new Headers(actualRequestInit.headers)).toStrictEqual(
       requestInit.headers,
@@ -268,7 +267,7 @@ describe("returnFetch", () => {
     );
 
     // then
-    expect(fetchMocked.mock.calls[0][0]).toBeInstanceOf(Request);
+    expect(fetchMocked.mock.calls[0][0]).toBe("https://base-url.com/todos/1");
     await expect(
       new Response(fetchMocked.mock.calls[0][1].body).text(),
     ).resolves.toBe('{"hello":"world!"}');
@@ -285,7 +284,7 @@ describe("returnFetch", () => {
     expect(actualRequestInit.redirect).toBe(requestInit.redirect);
     expect(actualRequestInit.integrity).toBe(requestInit.integrity);
     expect(actualRequestInit.keepalive).toBe(requestInit.keepalive);
-    expect(actualRequestInit.signal).toBeNull();
+    expect(actualRequestInit.signal).instanceof(AbortSignal);
     expect(actualRequestInit.window).toBeNull();
   });
 });

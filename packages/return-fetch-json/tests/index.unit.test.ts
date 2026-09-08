@@ -30,22 +30,35 @@ describe("returnFetch", () => {
     { Accept: "text/plain", "Content-Type": "text/plain" },
     { Accept: "", "Content-Type": "" },
   ])(
-    "preserves header precedence including empty values: %j",
+    "preserves legacy JSON defaults and per-call overrides: %j",
     async (headers) => {
       fetchMocked.mockResolvedValue(new Response("{}"));
       await returnFetchJson({
         headers: new Headers({
           Accept: "application/problem+json",
           "Content-Type": "application/merge-patch+json",
+          "X-Default": "retained",
         }),
       })("https://example.com", { method: "PATCH", body: {}, headers });
       const actual = fetchMocked.mock.calls[0][1].headers;
-      expect(actual.get("Accept")).toBe(
-        headers?.Accept ?? "application/problem+json",
-      );
+      expect(actual.get("Accept")).toBe(headers?.Accept || "application/json");
       expect(actual.get("Content-Type")).toBe(
-        headers?.["Content-Type"] ?? "application/merge-patch+json",
+        headers?.["Content-Type"] || "application/json",
       );
+      expect(actual.get("X-Default")).toBe("retained");
+    },
+  );
+
+  it.each([undefined, "GET"])(
+    "retains factory Content-Type when method is %j",
+    async (method) => {
+      fetchMocked.mockResolvedValue(new Response("{}"));
+      await returnFetchJson({
+        headers: { Accept: "text/plain", "Content-Type": "text/plain" },
+      })("https://example.com", { method });
+      const headers = fetchMocked.mock.calls[0][1].headers;
+      expect(headers.get("Accept")).toBe("application/json");
+      expect(headers.get("Content-Type")).toBe("text/plain");
     },
   );
 
@@ -60,16 +73,29 @@ describe("returnFetch", () => {
     },
   );
 
-  it("types scalar responses and the invalid-JSON fallback", async () => {
+  it("preserves legacy response types and the invalid-JSON fallback", async () => {
     fetchMocked.mockResolvedValue(new Response("123"));
     const response = await returnFetchJson()<number>("https://example.com");
-    expectTypeOf(response.body).toEqualTypeOf<number | string>();
+    expectTypeOf(response.body).toEqualTypeOf<string>();
     fetchMocked.mockResolvedValue(new Response("not JSON"));
     const fallback = await returnFetchJson()<{ id: number }>(
       "https://example.com",
     );
-    expectTypeOf(fallback.body).toEqualTypeOf<{ id: number } | string>();
+    expectTypeOf(fallback.body).toEqualTypeOf<{ id: number }>();
     expect(fallback.body).toBe("not JSON");
+  });
+
+  it("allows existing object access and untyped string methods", async () => {
+    fetchMocked.mockResolvedValueOnce(new Response('{"id":1}'));
+    const response = await returnFetchJson()<{ id: number }>(
+      "https://example.com",
+    );
+    const id: number = response.body.id;
+    expect(id).toBe(1);
+    fetchMocked.mockResolvedValueOnce(new Response(" plain text "));
+    const plain = await returnFetchJson()("https://example.com");
+    expectTypeOf(plain.body).toEqualTypeOf<string>();
+    expect(plain.body.trim()).toBe("plain text");
   });
 
   it("should serialize request body and deserialize response body", async () => {

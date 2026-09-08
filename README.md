@@ -250,7 +250,9 @@ export type ResponseGenericBody<T> = Omit<
   body: T;
 };
 
-export type JsonResponse<T> = ResponseGenericBody<T | string>;
+export type JsonResponse<T> = T extends object
+  ? ResponseGenericBody<T>
+  : ResponseGenericBody<string>;
 
 
 // this resembles the default behavior of axios json parser
@@ -271,8 +273,8 @@ const parseJsonSafely = (text: string): unknown => {
 export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
   const fetch = returnFetch(args);
 
-  return async <T = unknown>(
-    url: string | URL,
+  return async <T>(
+    url: FetchArgs[0],
     init?: JsonRequestInit,
   ): Promise<JsonResponse<T>> => {
     const response = await fetch(url, {
@@ -291,7 +293,7 @@ export const returnFetchJson = (args?: ReturnFetchDefaultOptions) => {
       type: response.type,
       url: response.url,
       body,
-    };
+    } as JsonResponse<T>;
   };
 };
 
@@ -630,23 +632,18 @@ any features of `fetch`.
 **Be careful! the default options' baseURL does not applied to a `URL` or `Request` object.** Default headers are
 still applied to a `Request` object as you expected.
 
-`Request` inputs are forwarded intact: their bodies are not buffered or consumed by
-`return-fetch`. Request interceptors and response interceptors receive that same
-`Request` as `requestArgs[0]`, rather than a URL string and an extracted body. Use
-`input instanceof Request ? input.url : input.toString()` when reading the URL.
-The second argument keeps the caller's options, including implementation-specific
-options. To override a Request's method or body, return the desired options from
-the request interceptor, just as you would pass the second argument to `fetch`.
+`Request` inputs are normalized to a URL string and a `RequestInit` before
+interceptors run. Their bodies are buffered as an `ArrayBuffer` (or `undefined`
+for an empty body), preserving the existing interceptor contract. This waits for
+the entire Request body, so Request uploads are not streamed through.
 
-When default headers are configured, they are merged with `init.headers` if supplied,
-otherwise with the Request's headers. An explicit `init.headers` replaces the Request's
-headers before defaults are applied, following native fetch's override behavior.
+Request and response interceptors receive the normalized URL and options. A
+response interceptor can retry a buffered Request body with `fetch(...requestArgs)`.
+This does not make a body stream passed directly in `init.body` with a string or URL
+input reusable; that stream still needs a fresh body for each attempt.
 
-**Migration:** interceptors that assumed `FetchArgs[0]` was always a string or URL
-must also handle `Request`. Request bodies remain single-use, as with native fetch.
-When retrying a request with a body, clone the Request before the first attempt and
-pass the unused clone to the retry. A body stream supplied in `init.body` needs its
-own fresh body for each attempt.
+Call headers replace Request headers when supplied, and the resulting headers
+override factory defaults.
 
 #### #7-1. `URL` object as a first argument
 

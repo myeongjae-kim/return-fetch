@@ -46,15 +46,15 @@ fetchExtended<{ id: number }>("/posts", {
   .then(console.log);
 ```
 
-Header precedence is per-call headers, then factory headers, then the built-in
-`application/json` defaults. Explicit empty header values are preserved.
+For Accept, non-empty per-call headers override the built-in `application/json`
+default, which overrides factory headers. The same applies to Content-Type when
+an explicit non-GET method is supplied. Empty per-call values trigger these JSON
+defaults. Other headers retain the core per-call-over-factory precedence.
 
-`JsonResponse<T>.body` is `T | string`: valid JSON can be an object, array, number,
-boolean or null, and invalid JSON is returned as trimmed text. The generic describes
-the expected JSON value; it does not validate the server's response. Calls without
-a type argument return an `unknown` body. Check for a string before accessing
-properties of an expected object. This replaces the previous object-only conditional
-response type.
+For compatibility, `JsonResponse<T>.body` keeps its original conditional type:
+`T` for object types and `string` otherwise, including calls without a type argument.
+This is a type assertion, not response validation: at runtime, valid JSON is parsed
+as-is (including numbers, booleans and null), and invalid JSON becomes trimmed text.
 
 ## Installation
 
